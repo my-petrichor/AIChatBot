@@ -18,7 +18,7 @@ export function useTheme() {
   const theme = computed(() => {
     return isDark.value ? darkTheme : undefined
   })
-  // #5852D6
+  // rgba(74, 109, 255, 1)
   const themeOverrides = computed<GlobalThemeOverrides>(() => {
     if (isDark.value) {
       return {
@@ -27,10 +27,10 @@ export function useTheme() {
 
         },
         Radio: {
-          boxShadowActive: '0 0 0 2px #5852D6',
-          boxShadowHover: '0 0 0 2px #5852D6',
-          boxShadowFocus: '0 0 0 2px #5852D6',
-          dotColorActive: '#5852D6',
+          boxShadowActive: '0 0 0 2px rgba(74, 109, 255, 1)',
+          boxShadowHover: '0 0 0 2px rgba(74, 109, 255, 1)',
+          boxShadowFocus: '0 0 0 2px rgba(74, 109, 255, 1)',
+          dotColorActive: 'rgba(74, 109, 255, 1)',
         },
         Dialog: {
 
@@ -39,40 +39,44 @@ export function useTheme() {
 
         },
         Input: {
-          borderHover: '0 0 0 2px #5852D6',
-          borderFocus: '0 0 0 2px #5852D6',
+          borderHover: '0 0 0 2px rgba(74, 109, 255, 1)',
+          borderFocus: '0 0 0 2px rgba(74, 109, 255, 1)',
           colorFocus: 'transparent',
-          boxShadowFocus: '0 0 0 2px #5852D6',
+          boxShadowFocus: '0 0 0 2px rgba(74, 109, 255, 1)',
         },
         Button: {
-          textColorHover: '#5852D6',
-          borderHover: '1px solid #5852D6',
-          borderFocus: '1px solid #5852D6',
-          textColorFocus: '#5852D6',
+          textColorHover: 'rgba(74, 109, 255, 1)',
+          borderHover: '1px solid rgba(74, 109, 255, 1)',
+          borderFocus: '1px solid rgba(74, 109, 255, 1)',
+          textColorFocus: 'rgba(74, 109, 255, 1)',
         },
         Tabs: {
-          textColorHover: '#5852D6',
-          borderHover: '1px solid #5852D6',
-          borderFocus: '1px solid #5852D6',
-          textColorFocus: '#5852D6',
-          tabTextColorActiveBar: '#5852D6',
-          tabTextColorActiveLine: '#5852D6',
-          tabTextColorHoverLine: '#5852D6',
-          barColor: '#5852D6',
+          textColorHover: 'rgba(74, 109, 255, 1)',
+          borderHover: '1px solid rgba(74, 109, 255, 1)',
+          borderFocus: '1px solid rgba(74, 109, 255, 1)',
+          textColorFocus: 'rgba(74, 109, 255, 1)',
+          tabTextColorActiveBar: 'rgba(74, 109, 255, 1)',
+          tabTextColorActiveLine: 'rgba(74, 109, 255, 1)',
+          tabTextColorHoverLine: 'rgba(74, 109, 255, 1)',
+          barColor: 'rgba(74, 109, 255, 1)',
           tabColorSegment: 'rgba(77, 70, 253, 1)',
         },
         Tabpane: {
-          textColorHover: '#5852D6',
-          borderHover: '1px solid #5852D6',
-          borderFocus: '1px solid #5852D6',
-          textColorFocus: '#5852D6',
+          textColorHover: 'rgba(74, 109, 255, 1)',
+          borderHover: '1px solid rgba(74, 109, 255, 1)',
+          borderFocus: '1px solid rgba(74, 109, 255, 1)',
+          textColorFocus: 'rgba(74, 109, 255, 1)',
         },
         FormItem: {
           lableHeight: '0px',
         },
         Upload: {
-          draggerBorderHover: '2px dashed #5852D6',
-          draggerBorderActive: '2px dashed #5852D6',
+          draggerBorderHover: '2px dashed rgba(74, 109, 255, 1)',
+          draggerBorderActive: '2px dashed rgba(74, 109, 255, 1)',
+        },
+        Split: {
+          resizableTriggerColorHover: 'rgba(9,9,87,0.16)',
+          // resizableTriggerColor: 'rgba(74, 109, 255, 1)',
         },
       }
     }

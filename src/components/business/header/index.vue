@@ -98,7 +98,8 @@ onBeforeUnmount(() => {
 <style scoped lang="less">
 .header {
   height: 50px;
-  background: #20232B;
+  // background: #20232B;
+  background: rgba(255, 255, 255, 1);
   width: 100%;
   padding: 10px 20px 10px 20px;
   display: flex;

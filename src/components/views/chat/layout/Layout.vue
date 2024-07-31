@@ -14,28 +14,15 @@ const accessToken = computed(() => userStore.accessToken)
 const currentThemeName = ref(appStore.theme)
 const chatStore = useChatStore()
 const collapsed = computed(() => appStore.siderCollapsed)
-const getMobileClass = computed(() => {
-  if (isMobile.value)
-    return ['rounded-none', 'shadow-none']
-  return ['border', 'rounded-md', 'shadow-md', 'dark:border-neutral-800']
-})
-
-const getContainerClass = computed(() => {
-  return [
-    'h-full',
-    { 'pl-[260px]': !isMobile.value && !collapsed.value },
-  ]
-})
 watch(appStore, () => {
   currentThemeName.value = appStore.theme
 })
 
 onMounted(() => {
   chatStore.setIsChatLoading(false)
-  console.log("accessToken in layout comp",accessToken)
-   if(!accessToken.value){
-    router.replace('/');
-   }
+  //  if(!accessToken.value){
+  //   router.replace('/');
+  //  }
 })
 </script>
 

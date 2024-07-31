@@ -9,8 +9,9 @@ import { Message } from './components'
 import { useScroll } from './hooks/useScroll'
 import { useChat } from './hooks/useChat'
 import { useUsingContext } from './hooks/useUsingContext'
-import speechOff from '@/assets/silentVoiceInput.png'
-import speechOn from '@/assets/activeVoiceInput.png'
+// import speechOff from '@/assets/silentVoiceInput.png'
+// import speechOn from 
+import new_conversation from '@/assets/new_conversation.png'
 import { SvgIcon } from '@/components/common'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useAppStore, useChatStore, useUserStore } from '@/store'
@@ -829,25 +830,28 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col w-full h-full bg-grey " style="position: relative">
+  <div class="flex flex-col w-full h-full " style="position: relative;  background: rgba(245, 247, 253, 1);
+">
     <div v-if="showAnnoucement" class="announcement" style="position: absolute;top: 10px;left: 10px;">
       <img class="icon24" style="display: inline-block;" src="@/assets/icon_消息@2x.png"> 系统消息:{{ announcementContent }}
     </div>
     <main class="overflow-hidden" style="height: calc(100% - footerRef.value?.clientHeight);flex:9">
       <div id="scrollRef" ref="scrollRef" class="h-full overflow-hidden overflow-y-auto">
-        <div
-          id="image-wrapper" class="w-full h-full max-w-screen-xl m-auto dark:bg-[#101014]"
-          :class="[isMobile ? 'p-2' : 'p-5']" :style="[{
+        <!-- :class="[isMobile ? 'p-2' : 'p-5']" :style="[{
             'background-color': currentThemeName === 'dark' ? 'rgb(0 0 0 / var(--tw-bg-opacity))' : 'inherit', 'background': '#1C1E25',
-          }]"
+          }]" -->
+           <div
+          id="image-wrapper" class="w-full h-full max-w-screen-xl m-auto "
+         style="background: rgba(245, 247, 253, 1);"
         >
-          <template v-if="!dataSources.length">
+          <!-- <template v-if="!dataSources.length">
             <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
               <SvgIcon icon="ri:bubble-chart-fill" class="mr-2 text-3xl" />
               <span>Aha~</span>
             </div>
-          </template>
-          <template v-else>
+          </template> -->
+        <!-- v-else  -->
+         <template >
             <div>
               <Message
                 v-for="(item, index) of dataSources" :key="index" :date-time="item.dateTime" :text="item.text"
@@ -901,15 +905,18 @@ onUnmounted(() => {
       <div class="w-full max-w-screen-xl m-auto flex align-center" style="height: fit-content; min-height: 50px;">
         <div class="w-full flex" style="position: relative; height: fit-content;min-height: 50px;">
           <div>
+            <!-- :src="speeching ? speechOn : speechOff"  -->
             <img
               v-if="!loading && !chatStore.isChatLoading" class="speech-button"
-              :src="speeching ? speechOn : speechOff" style="opacity: 1" @click="handleSpeech"
+              :src = 'new_conversation'
+              style="opacity: 1" @click="handleSpeech"
             >
             <div v-else class="cannot-send-icon" />
           </div>
           <NInput
             ref="inputRef" v-model:value="prompt" class="flex items-center justify-center"
-            style="padding-right: 50px; height: 100%;min-height: 50px;border-radius: 10px 10px 10px 10px"
+            style="padding-right: 50px; height: 100%;min-height: 50px;border-radius: 10px 10px 10px 10px; background:white !important;
+            "
             type="textarea" :placeholder="placeholder" :autosize="{ minRows: 1, maxRows: isMobile ? 4 : 8 }"
             @keyup.enter="handleKeyDown"
           />

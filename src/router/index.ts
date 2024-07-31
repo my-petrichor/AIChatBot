@@ -7,19 +7,6 @@ import { ApproveRegistration } from '@/components/business/approveRegistration'
 import { RejectRegistration } from '@/components/business/rejectRegistration'
 
 const routes: RouteRecordRaw[] = [
-  // {
-  //   path: '/',
-  //   name: 'Base',
-  //   component: ChatLayout,
-  //   redirect: '/chat',
-  //   children: [
-  //     {
-  //       path: '/chat/:uuid?',
-  //       name: 'Chat',
-  //       // component: () => import('@/components/views/chat/index.vue')
-  //     },
-  //   ],
-  // },
   {
     path: '/index',
     name: 'Homepage',
