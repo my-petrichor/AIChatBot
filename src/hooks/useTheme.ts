@@ -2,6 +2,7 @@ import type { GlobalThemeOverrides } from 'naive-ui'
 import { computed, watch } from 'vue'
 import { darkTheme, useOsTheme } from 'naive-ui'
 import { useAppStore } from '@/store'
+import Header from '@/components/business/header/index.vue';
 
 export function useTheme() {
   const appStore = useAppStore()
@@ -36,13 +37,19 @@ export function useTheme() {
 
         },
         Modal: {
-
+          titleTextColor: 'rgba(74, 109, 255, 1)',
+        },
+        Card: {
+          titleTextColor: 'Black',
+          titleFontSizeHuge: '32px',
         },
         Input: {
-          borderHover: '0 0 0 2px rgba(74, 109, 255, 1)',
-          borderFocus: '0 0 0 2px rgba(74, 109, 255, 1)',
+          // borderHover: '0 0 0 2px rgba(74, 109, 255, 1)',
+          borderHover: '1px solid rgba(77, 80, 253, 1)',
+          borderFocus: '1px solid  rgba(77, 80, 253, 1)',
           colorFocus: 'transparent',
-          boxShadowFocus: '0 0 0 2px rgba(74, 109, 255, 1)',
+          boxShadowFocus: '1px solid  rgba(77, 80, 253, 1)',
+          backgroundColor: 'rgba(245, 247, 250, 1)',
         },
         Button: {
           textColorHover: 'rgba(74, 109, 255, 1)',
@@ -51,10 +58,12 @@ export function useTheme() {
           textColorFocus: 'rgba(74, 109, 255, 1)',
         },
         Tabs: {
-          textColorHover: 'rgba(74, 109, 255, 1)',
+          // textColorHover: 'rgba(74, 109, 255, 1)',
           borderHover: '1px solid rgba(74, 109, 255, 1)',
           borderFocus: '1px solid rgba(74, 109, 255, 1)',
           textColorFocus: 'rgba(74, 109, 255, 1)',
+          paneTextColor:"black",
+          tabTextColorCard: 'black',
           tabTextColorActiveBar: 'rgba(74, 109, 255, 1)',
           tabTextColorActiveLine: 'rgba(74, 109, 255, 1)',
           tabTextColorHoverLine: 'rgba(74, 109, 255, 1)',

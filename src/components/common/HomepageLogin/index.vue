@@ -346,7 +346,7 @@ const getSmsCode = () => {
 <template>
   <NModal
     v-model:show="show" :title="mode === 'login' ? '登录' : '内测申请'" :auto-focus="false" preset="card"
-    style="width: 95%; max-width: 640px"
+    style="width: 95%; max-width: 640px;background-color: rgba(255, 255, 255, 1);color:'black';"
   >
     <NTabs v-if="mode === 'login'" type="segment" animated :on-update:value="changeTabInLogin">
       <NTabPane name="passwordLogin" tab="密码登录">
@@ -368,13 +368,15 @@ const getSmsCode = () => {
             <NInput v-model:value="smsForm.sms" placeholder="验证码">
               <template #suffix>
                 <span
-                  v-if="get_sms_counter <= 0" style="border-left: 1px rgba(66, 70, 87, 1) solid;
+                  v-if="get_sms_counter <= 0" style="border-left: 1px rgba(220, 224, 228, 1) solid;
                   padding-left: 10px;
+                  color: rgba(77, 80, 253, 1);
                   " @click="getSmsCode"
                 >获取验证码</span>
                 <span
                   v-else style="border-left: 1px rgba(66, 70, 87, 1) solid;
                   padding-left: 10px;
+                  color: rgba(77, 80, 253, 1);
                   "
                 >{{ get_sms_counter }}</span>
               </template>
@@ -394,7 +396,7 @@ const getSmsCode = () => {
           登录
         </NButton>
         <div class="w-full flex justify-center mt-7">
-          <div>
+          <div style="color:rgba(89, 94, 102, 1)">
             没有账号？<a style="color: rgba(96, 127, 255, 1);" @click="applyForInternalTest">
               内测申请
             </a>
@@ -419,8 +421,9 @@ const getSmsCode = () => {
             <NInput v-model:value="companyForm.smsCode" placeholder="验证码">
               <template #suffix>
                 <span
-                  v-if="get_sms_counter <= 0" style="border-left: 1px rgba(66, 70, 87, 1) solid;
+                  v-if="get_sms_counter <= 0" style="border-left: 1px rgba(220, 224, 228, 1) solid;
                   padding-left: 10px;
+                  color: rgba(77, 80, 253, 1);
                   " @click="getSmsCode"
                 >获取验证码</span>
                 <span
@@ -448,7 +451,7 @@ const getSmsCode = () => {
             <NInput v-model:value="individualForm.smsCode" placeholder="验证码">
               <template #suffix>
                 <span
-                  v-if="get_sms_counter <= 0" style="border-left: 1px rgba(66, 70, 87, 1) solid;
+                  v-if="get_sms_counter <= 0" style="border-left: 1px rgba(220, 224, 228, 1) solid;
                   padding-left: 10px;
                   " @click="getSmsCode"
                 >获取验证码</span>
@@ -480,7 +483,7 @@ const getSmsCode = () => {
           提交
         </NButton>
         <div class="w-full flex justify-center mt-7">
-          <div>
+          <div style="color:rgba(89, 94, 102, 1)">
             已有账号？<a style="color: rgba(96, 127, 255, 1);" @click="loginNow">
               立即登录
             </a>
@@ -495,5 +498,12 @@ const getSmsCode = () => {
 .n-form {
   padding-left: 1px;
   padding-right: 1px
+}
+.n-card-header {
+  font-size: 32px !important;
+}
+
+.n-tabs-tab__label {
+  color: black !important; /* Force the color to black */
 }
 </style>
