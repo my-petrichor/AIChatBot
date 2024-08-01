@@ -1,64 +1,100 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref } from 'vue'
-import knowledgePath from '@/assets/知识对话.png'
-import file from '@/assets/文档对话.png'
-import writing from '@/assets/对话写作.png'
 
-const showModal = ref(false)
 const Login = defineAsyncComponent(() => import('@/components/common/HomepageLogin/index.vue'))
-const specialtiesArr = [
-  {
-    name: 'knowledge',
-    img: knowledgePath,
-  },
-  {
-    name: 'file',
-    img: file,
-  },
-  {
-    name: 'writing',
-    img: writing,
-  },
-]
 const clickButton = () => {
-  showModal.value = true
+  
 }
 </script>
 
 <template>
   <div ref="index" class="index">
     <div class="header">
-      <img src="@/assets/logo.png" alt="Logo">
+			<div class="headerUnit">
+				<div class="headerLeft">
+      		<img src="@/assets/logo.png" alt="Logo">
+				</div>
+				<div class="headerRight">
+					<div :style="{ marginRight: '10px'}">Username</div>
+					<div class="experience" @click="clickButton">退出</div>
+				</div>
+			</div>
     </div>
+
     <div class="middleContent">
       <div class="unit">
-        <div class="title">
-          <img src="@/assets/标题.png" alt="Title Image">
+        <div class="lingshouyingxiao">
+					<div class='lingshouyingxiaoLeft'>
+						<div :style="{ fontSize: '50px', fontWeight: 'bold'}">AI零售营销</div>
+						<div :style="{ fontSize: '25px'}">助力零售业绩</div>
+					</div>
+					<div class="middleContentiImage">
+						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div :style="{ fontSize: '20px'}">AI营销写作</div>
+					</div>
+					<div class="middleContentiImage">
+						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div :style="{ fontSize: '20px'}">AI风格改写</div>
+					</div>
+					<div class="middleContentiImage">
+						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div :style="{ fontSize: '20px'}">RAP自动运营账号</div>
+					</div>
+					<div class="middleContentiImage">
+						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div :style="{ fontSize: '20px'}">营销决策，智能辅助</div>
+					</div>
         </div>
-        <div class="specialties">
-          <img v-for="specialty in specialtiesArr" :key="specialty.name" :src="specialty.img">
+				<div class="gukeyingxiao">
+					<div class='gukeyingxiaoLeft'>
+						<div :style="{ fontSize: '50px', fontWeight: 'bold'}">AI顾客营销</div>
+						<div :style="{ fontSize: '25px'}">老顾客回流、提频</div>
+					</div>
+					<div class="middleContentiImage">
+						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div :style="{ fontSize: '20px'}">会员促活文案</div>
+					</div>
+					<div class="middleContentiImage">
+						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div :style="{ fontSize: '20px'}">只能评论处理</div>
+					</div>
+					<div class="middleContentiImage">
+						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div :style="{ fontSize: '20px'}">客诉智能回复</div>
+					</div>
+        </div>
+				<div class="qiangjigongcheng">
+					<div class='qiangjigongchengLeft'>
+						<div :style="{ fontSize: '50px', fontWeight: 'bold'}">强基工程</div>
+						<div :style="{ fontSize: '25px'}">赋能中断人员成长</div>
+					</div>
+					<div class="middleContentiImage">
+						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div :style="{ fontSize: '20px'}">AI随身专家</div>
+					</div>
+					<div class="middleContentiImage">
+						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div :style="{ fontSize: '20px'}">智能培训</div>
+					</div>
+					<div class="middleContentiImage">
+						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div :style="{ fontSize: '20px'}">智能督导</div>
+					</div>
         </div>
       </div>
     </div>
-    <div class="flex-center">
-      <div class="experience" @click="clickButton">
-        立即体验
-        <img src="@/assets/蒙版组6.png" alt="Group 8607">
-      </div>
-    </div>
+		
     <div class="flex-center flex bottom">
       <div class="flex-center icp">
         <a target="_blank" href="https://beian.miit.gov.cn">京ICP备2023030175号-1</a>
       </div>
     </div>
-    <Login v-if="showModal" v-model:visible="showModal" />
   </div>
 </template>
 
 <style scoped lang="less">
 .index {
 	width: 100%;
-	padding-top: 25px;
 	overflow: scroll;
 	background-image: url('@/assets/首页bg.png');
 	background-size: cover;
@@ -69,50 +105,93 @@ const clickButton = () => {
 		width: 100%;
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
 		align-items: center;
+		margin-top: 1vh;
 
-		.headerName {
-			color: white;
-			font-weight: bold;
+		.headerUnit {
+			width: 72vw;
+			display: flex;
+			flex-direction: row;
+			justify-content:space-between;
+			
+			.headerRight{
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+			}
 		}
 	}
 
 	.middleContent {
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
 		align-items: center;
+		margin-top: 8vh;
 
 		.unit {
-			flex-direction: column;
-			justify-content: space-between;
-			align-items: flex-start;
+			width: 72vw;
+			height: 72vh;
 			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
+			align-items: flex-start;
 
-			.title {
-				margin-top: 138px;
-
-				img {
-					width: 888px;
-					height: 235px;
+			.lingshouyingxiao {
+				width: 100%;
+				display: flex;
+				justify-content: flex-start;
+				flex-direction: row;
+				
+				.lingshouyingxiaoLeft{
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+					width: 20%;
+				}
+				.middleContentiImage{
+					width: 20%;
+					display: flex;
+					flex-direction: column;
+					align-items: center;
 				}
 			}
-
-			.specialties {
-				justify-content: center;
-				align-items: center;
+			.gukeyingxiao {
+				width: 100%;
 				display: flex;
+				justify-content: flex-start;
 				flex-direction: row;
-				flex-wrap: wrap;
-				margin-top: 50px;
-				padding-left: 60px;
 
-				img {
-					margin-right: 40px;
-					margin-bottom: 10px;
-					background-color: rgba(25, 52, 204, 1);
-					border-radius: 10px;
+				.gukeyingxiaoLeft{
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+					width: 20%;
+				}
+				.middleContentiImage{
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					width: 20%;
+				}
+
+			}
+			.qiangjigongcheng {
+				width: 100%;
+				display: flex;
+				justify-content: flex-start;
+				flex-direction: row;
+
+				.qiangjigongchengLeft{
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+					width: 20%;
+				}
+				.middleContentiImage{
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					width: 20%;
 				}
 			}
 		}
@@ -123,6 +202,7 @@ const clickButton = () => {
 		justify-content: center;
 		align-items: center;
 		display: flex;
+		margin-top: 4vh;
 	}
 
 	.experience {
@@ -130,22 +210,7 @@ const clickButton = () => {
 		justify-content: center;
 		align-items: center;
 		display: flex;
-		margin-top: 197px;
-		color: white;
-		width: 300px;
-		height: 60px;
-		margin-bottom: 50px;
-		justify-content: center;
-		padding-top: 14px;
-		padding-bottom: 14px;
-		background-image: url('@/assets/组 8606.png');
-		background-size: cover;
-		background-position: center;
-		font-size: 24px;
-
-		img {
-			margin-left: 10px;
-		}
+		font-size: 12px;
 	}
 
 	.bottom {
