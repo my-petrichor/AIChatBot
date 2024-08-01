@@ -11,8 +11,8 @@
     "vue"
   ],
   "scripts": {
-    "dev": "vite",
-		"dev:port": "vite --port $1",
+    "dev": "npx vite",
+		"dev:port": "npx vite --port $1",
     "build": "run-p build-only",
     "buildWithTypeCheck": "run-p type-check build-only",
     "preview": "vite preview",
