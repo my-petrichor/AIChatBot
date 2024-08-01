@@ -117,19 +117,15 @@ onUnmounted(() => {
 
 <template>
   <div
-    class="text-white bg-[#101114]"
+    class="text-white"
     :class="wrapClass"
+    style="background-color: white;"
   >
-    <div ref="textRef" class="leading-relaxed break-words">
+    <div     style="background-color: white;"
+    ref="textRef" class="leading-relaxed break-words">
       <div v-if="!inversion">
         <template v-if="loading">
-          <!-- <div v-if="queryContent" class="dark:text-white fadeIn " style="font-weight: bold; font-size: large !important;">
-            <div>
-              正在搜索：
-              <span style="font-weight: 1000; font-size: larger !important">{{ queryContent }}</span>
-            </div>
-            <div>正在为你生成答案。。。<span class="dark:text-white w-[4px] h-[20px] inline-block animate-blink" /></div>
-          </div> -->
+         
           <div>
 						<div v-if="!text">
             回答输入中...<span class="dark:text-white w-[4px] h-[20px] inline-block animate-blink" /></div>
@@ -141,7 +137,7 @@ onUnmounted(() => {
           <div v-if="type === 'source_documents'">
             <div
               class="markdown-body"
-              style="background-color: #101114;"
+              style="background-color: white;color:black ;"
               v-html="text"
             />
             <div v-if="sourceDocumentsTypeData?.source_documents?.length">
@@ -176,7 +172,7 @@ onUnmounted(() => {
             </div>
             <div
               class="markdown-body"
-              style="background-color: #101114;"
+              style="background-color: white;"
               v-html="generalQueryData?.abstract"
             />
             <div v-if="generalQueryData?.querys?.length">
@@ -234,7 +230,7 @@ onUnmounted(() => {
           <div
             v-else
             class="markdown-body"
-            style="background-color: #101114;"
+            style="background-color: white;"
             v-html="text"
           />
         </div>
@@ -258,5 +254,14 @@ onUnmounted(() => {
 
 .fadeIn:hover {
   opacity: 1;
+}
+
+*{
+  color:black
+}
+
+.markdown-body{
+  color:black;
+  background-color: white;
 }
 </style>

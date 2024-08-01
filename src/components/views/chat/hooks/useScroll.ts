@@ -15,6 +15,7 @@ export function useScroll(): ScrollReturn {
 
   const scrollToBottom = async () => {
     await nextTick()
+    console.log('scrollToBottom scrollRef.value',scrollRef.value)
     if (scrollRef.value)
       scrollRef.value.scrollTop = scrollRef.value.scrollHeight
   }

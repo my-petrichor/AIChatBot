@@ -1,38 +1,20 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, onMounted, ref } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
 import {
-  NDialogProvider,
-  NLoadingBarProvider,
-  NMessageProvider,
-  NNotificationProvider,
   NSplit,
-  useDialog,
-  useLoadingBar,
-  useMessage,
-  useNotification,
 } from 'naive-ui'
 // import { SwapHorizontal as SwapHorizontalIcon } from '@vicons/ionicons5'
-import Knowledge from '@/components/business/knowledge/index.vue'
-import myFile from '@/components/business/myFile/index.vue'
-import Chat from '@/components/views/chat/index.vue'
-import RightPanel from '@/components/business/rightPanel/index.vue'
+// import Chat from '@/components/views/chat/index.vue'
+
+
+import Chat from '@/components/styleChat/styledChat/index.vue'
+
 import { useAppStore, useChatStore } from '@/store'
 const leftSide = ref(null)
 const content = ref(null)
-const rightPanelWidth = ref<any>(500)
 const chatStore = useChatStore()
 const appStore = useAppStore()
-const siderCollapsed = computed(() => appStore.siderCollapsed)
-const chatRef = ref<any>(null)
 const defaultModel = 'ChatGLM-6b'
-let contentWidth: number
-// const gridTemplateColumns = computed(() => {
-//   contentWidth = (content?.value as any)?.offsetWidth
-//   return rightPanelWidth.value >= 0.7 * contentWidth ? `${contentWidth * 0.1}px ${contentWidth * 0.2}px ${contentWidth * 0.7}px` : `300px ${contentWidth - 300 - rightPanelWidth.value}px ${rightPanelWidth.value}px`
-// })
-// const onDetailHeightUpdateHandler = (e: string) => {
-//   rightPanelWidth.value = e
-// }
 onBeforeMount(() => {
   chatStore.setChatMode(1)
 })
@@ -42,51 +24,27 @@ onMounted(async () => {
 </script>
 
 <template>
-<!-- :style="{ 'grid-template-columns': gridTemplateColumns, 'transition': 'grid-gap 0.5s ease-in-out' }" -->
   <div ref="content" class="content">
     <NSplit
     direction="horizontal"
     style="height: calc(100% )"
-    :default-size="0.4"
+    :default-size="0.2"
     :resize-trigger-size="16"
-    :min="0.25"
-    :max="0.75"
+    :min="0.2"
+    :max="0.8"
   >
-    <template #1>
-      <!-- Pane 1 -->
-      <!-- :class="{ leftSideCollapsed: siderCollapsed }" -->
+    <template #1 >
       <div ref="leftSide" class="leftSide"  style="overflow-y: scroll;overflow-x:scroll">
-      <Knowledge />
-      <myFile />
-    </div>
+      </div>
     </template>
     <template #2>
-      <!-- Pane 2 -->
       <div class="middleContent">
-      <!-- <Detail
-        v-if="currentChatMode === 2" id="detail" :style="{ height: currentDetailHeight }"
-        @update:current-height="onDetailHeightUpdateHandler"
-      /> -->
       <Chat id="chat" ref="chatRef" class="chat" />
     </div>
     </template>
-    <template #resize-trigger>
-      <!-- <div
-        :style="{
-          height: '100%',
-          width: '1px',
-          backgroundColor: 'rgba(9, 9, 87, 0.16)',
-          // display: 'flex',
-          // justifyContent: 'center',
-          // alignItems: 'center',
-          // borderRadius: '1px',
-        }"
-      >
-      </div> -->
+    <template #resize-trigger >
     </template>
   </NSplit>
-
-    <!-- <RightPanel :max-width="(contentWidth * 7) / 10" @update:current-width="onDetailHeightUpdateHandler" /> -->
   </div>
 </template>
 

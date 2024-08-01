@@ -77,11 +77,12 @@ onBeforeUnmount(() => {
           fill="currentColor"
         />
       </svg>
-      <span>DocNotes</span>
+      <img style="width: 232px; height: auto;" src="@/assets/docnoteAI.png" alt="logo" />
+      <!-- <span style="color: black;">DocNotes AI</span> -->
     </div>
 
     <div class="right-div">
-      <div v-if="accessToken">
+      <div v-if="accessToken" style="color:black">
         {{ userStore.userInfo.name }}
       </div>
       <div v-if="!accessToken" class="login" @click="login">
@@ -98,6 +99,7 @@ onBeforeUnmount(() => {
 <style scoped lang="less">
 .header {
   height: 50px;
+  color:black;
   // background: #20232B;
   background: rgba(255, 255, 255, 1);
   width: 100%;

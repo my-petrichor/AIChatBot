@@ -38,6 +38,7 @@ export function useTheme() {
         },
         Modal: {
           titleTextColor: 'rgba(74, 109, 255, 1)',
+          closeColor: 'rgba(74, 109, 255, 1)',
         },
         Card: {
           titleTextColor: 'Black',
@@ -50,6 +51,7 @@ export function useTheme() {
           colorFocus: 'transparent',
           boxShadowFocus: '1px solid  rgba(77, 80, 253, 1)',
           backgroundColor: 'rgba(245, 247, 250, 1)',
+          textColor: 'black',
         },
         Button: {
           textColorHover: 'rgba(74, 109, 255, 1)',

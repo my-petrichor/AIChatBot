@@ -21,11 +21,6 @@ interface Props {
 
 const props = defineProps<Props>()
 
-// const { isMobile } = useBasicLayout()
-
-// const { iconRender } = useIconRender()
-
-// const message = useMessage()
 
 const textRef = ref<HTMLElement>()
 
@@ -33,53 +28,7 @@ const asRawText = ref(props.inversion)
 
 const messageRef = ref<HTMLElement>()
 
-// const options = computed(() => {
-//   const common = [
-//     {
-//       label: t('chat.copy'),
-//       key: 'copyText',
-//       icon: iconRender({ icon: 'ri:file-copy-2-line' }),
-//     },
-//     {
-//       label: t('common.delete'),
-//       key: 'delete',
-//       icon: iconRender({ icon: 'ri:delete-bin-line' }),
-//     },
-//   ]
 
-//   if (!props.inversion) {
-//     common.unshift({
-//       label: asRawText.value ? t('chat.preview') : t('chat.showRawText'),
-//       key: 'toggleRenderType',
-//       icon: iconRender({ icon: asRawText.value ? 'ic:outline-code-off' : 'ic:outline-code' }),
-//     })
-//   }
-
-//   return common
-// })
-
-// function handleSelect(key: 'copyText' | 'delete' | 'toggleRenderType') {
-//   switch (key) {
-//     case 'copyText':
-//       handleCopy()
-//       return
-//     case 'toggleRenderType':
-//       asRawText.value = !asRawText.value
-//       return
-//     case 'delete':
-//       emit('delete')
-//   }
-// }
-
-// async function handleCopy() {
-//   try {
-//     await copyToClip(props.text || '')
-//     message.success('复制成功')
-//   }
-//   catch {
-//     message.error('复制失败')
-//   }
-// }
 </script>
 
 <template>
@@ -117,23 +66,6 @@ const messageRef = ref<HTMLElement>()
           :abstract-data="abstractData"
         />
         <div class="flex flex-col">
-          <!-- <button
-            v-if="!inversion && regenerate && !shouldNotHaveRegenerateIcon"
-            class="mb-2 transition text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-300"
-            @click="handleRegenerate"
-          >
-            <SvgIcon icon="ri:restart-line" />
-          </button> -->
-          <!-- <NDropdown
-            :trigger="isMobile ? 'click' : 'hover'"
-            :placement="!inversion ? 'right' : 'left'"
-            :options="options"
-            @select="handleSelect"
-          >
-            <button class="transition text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-200">
-              <SvgIcon icon="ri:more-2-fill" />
-            </button>
-          </NDropdown> -->
         </div>
       </div>
     </div>

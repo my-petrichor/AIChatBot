@@ -1,4 +1,4 @@
-import { api, fetchStream } from './api'
+import { api,api2, fetchStream,fetchStream2 } from './api'
 
 export const chat = (params: any) => {
   return api({
@@ -40,6 +40,13 @@ export const getfilelist = (knowledge_base_id: any) => {
     url: '/local_doc_qa/list_files',
     method: 'get',
     params: { knowledge_base_id },
+  })
+}
+
+export const getWritingStyleList = () => {
+  return api2({
+    url: '/api/v1/marketing/writing/list_styles',
+    method: 'get',
   })
 }
 
@@ -270,6 +277,21 @@ export const chatPublicRepoStream = (params: any, auth: any, onStart: () => any,
   return fetchStream(
     'post',
     '/api/local_doc_qa/local_doc_chat_stream_test',
+    auth,
+    params,
+    onStart,
+    onUpdate,
+    onError,
+    onClose,
+  )
+}
+
+export const styleConverstionStream = (params: any, auth: any, onStart: () => any, onUpdate: (arg0: any) => any, onError: (arg0: any) => any, onClose: () => any) => {
+  return fetchStream2(
+    'post',
+		// /api/v1/marketing/writing/style_conversion_stream
+    'api2/api/v1/marketing/writing/style_conversion_stream',
+		// '/api/local_doc_qa/local_doc_chat_stream_test',
     auth,
     params,
     onStart,

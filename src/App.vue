@@ -43,6 +43,7 @@ setEnv(process.env.NODE_ENV || 'production')
  background-color:  rgba(245, 247, 250, 1) !important;
  border-radius: 4px !important;
  padding-left: 10px !important;
+ color:black !important;
 }
 
 .n-input__placeholder span{
@@ -52,5 +53,9 @@ setEnv(process.env.NODE_ENV || 'production')
 
 .n-tabs-rail{
   box-shadow: 0px 3px 14px 1px rgba(9, 9, 87, 0.16) !important;
+}
+
+.n-card-header__close{
+  color:rgba(188, 195, 204, 1) !important;
 }
 </style>

@@ -40,7 +40,8 @@ let speechWS: WebSocket | null = null
 let recorder: RecordRTC | null = null
 
 const dataSources = computed(() => accessToken.value ? chatStore.getChatByUuid(uuid.value) : [])
-const conversationList = computed(() => dataSources.value.filter(item => (!item.inversion && !!item.conversationOptions)))
+console.log("dataSources",dataSources)
+const conversationList = computed(() => dataSources.value.filter((item:any) => (!item.inversion && !!item.conversationOptions)))
 const quoteStr = ref<string>('')
 const prompt = ref<string>('')
 const loading = ref<boolean>(false)
@@ -53,12 +54,12 @@ const onRegenerateing = ref<boolean>(false)
 const inputRef = ref<HTMLElement>()
 const appStore = useAppStore()
 const messageFunction = useMessage()
-const currentChatMode = ref(chatStore.chatMode)
+// const currentChatMode = ref(chatStore.chatMode)
 const currentThemeName = ref(appStore.theme)
 const showAnnoucement = ref(true)
 const currentFolder = ref('')
-const currentSelectedFiles = ref(chatStore.myFileList.filter(ele => ele.selected)[0]?.children?.filter((ele: { isSelected: any }) => ele.isSelected)?.map((ele: { name: any }) => ele.name) || [])
-const announcementContent = ref(`已加载${kb_EN_CN_convertion[currentFolder.value] || currentFolder.value}，可以对此进行对话提问`)
+// const currentSelectedFiles = ref(chatStore.myFileList.filter(ele => ele.selected)[0]?.children?.filter((ele: { isSelected: any }) => ele.isSelected)?.map((ele: { name: any }) => ele.name) || [])
+// const announcementContent = ref(`已加载${kb_EN_CN_convertion[currentFolder.value] || currentFolder.value}，可以对此进行对话提问`)
 const placeholder = computed(() => {
   return '请输入提问内容，按回车键提交'
 })
@@ -491,132 +492,132 @@ async function onConversation() {
   }
 }
 
-async function onRegenerate() {
-  if (loading.value)
-    return
-  if (onRegenerateing.value)
-    return
-  if (!accessToken.value) {
-    messageFunction.error(t('common.unauthorizedTips'))
-    return
-  }
-  controller = new AbortController()
+// async function onRegenerate() {
+//   if (loading.value)
+//     return
+//   if (onRegenerateing.value)
+//     return
+//   if (!accessToken.value) {
+//     messageFunction.error(t('common.unauthorizedTips'))
+//     return
+//   }
+//   controller = new AbortController()
 
-  onRegenerateing.value = true
+//   onRegenerateing.value = true
 
-  updateChatSome(uuid.value, dataSources.value.length - 1, { loading: true, text: '' })
+//   updateChatSome(uuid.value, dataSources.value.length - 1, { loading: true, text: '' })
 
-  history.value = []
-  if (usingContext.value) {
-    for (let i = 0; i < dataSources.value.length - 2; i = i + 2)
-      history.value.push([dataSources.value[i].text, dataSources.value[i + 1].text.split('\n\n数据来源：\n\n>')[0]])
-  }
-  else { history.value.length = 0 }
+//   history.value = []
+//   if (usingContext.value) {
+//     for (let i = 0; i < dataSources.value.length - 2; i = i + 2)
+//       history.value.push([dataSources.value[i].text, dataSources.value[i + 1].text.split('\n\n数据来源：\n\n>')[0]])
+//   }
+//   else { history.value.length = 0 }
 
-  const { requestOptions } = dataSources.value[dataSources.value.length - 1]
+//   const { requestOptions } = dataSources.value[dataSources.value.length - 1]
 
-  const message = requestOptions?.prompt ?? ''
+//   const message = requestOptions?.prompt ?? ''
 
-  let options: Chat.ConversationRequest = {}
+//   let options: Chat.ConversationRequest = {}
 
-  if (requestOptions.options)
-    options = { ...requestOptions.options }
+//   if (requestOptions.options)
+//     options = { ...requestOptions.options }
 
-  loading.value = true
+//   loading.value = true
 
-  try {
-    const lastText = ''
-    let res, result
-    const fetchChatAPIOnce = async () => {
-      // send prompt to get response
-      switch (currentChatMode.value) {
-        case 1:
-          await postChatPublicRepoStream({
-            question: message,
-            history: history.value,
-            model: 'claude 2',
-            knowledge_base_id: chatStore.knowledgeRepo.filter((ele: any) => ele.selected)[0].children.filter((ele: any) => ele.checked).map((ele: any) => {
-              return {
-                id: chatStore.knowledgeRepo.filter((ele: any) => ele.selected)[0].name,
-                filter: 'time',
-                timeRange: [ele.startDate, ele.endDate],
-              }
-            }),
-          }, message, dataSources.value.length - 1, options)
-          return
-        case 2:
-          // eslint-disable-next-line no-case-declarations
-          const kbs = chatStore.myFileList.filter((ele: any) => ele.selected).map(ele => ({
-            id: ele.kb_name,
-            type: 1,
-            fileName: ele.children.filter((ele: { isSelected: any }) => ele.isSelected).map((ele: any) => ele.name),
-          }))
-          if (kbs[0].fileName.length === 0)
-            messageFunction.error('请选择至少一个文件或先上传文件')
-          await postChatMyKbStream({
-            kbs,
-            question: message,
-            history: history.value,
-            model: 'claude 2',
-          }, message, dataSources.value.length - 1, options)
-          return
-        default:
-          res = await chat({
-            question: message,
-            history: history.value,
-          })
-          result = res.data.source_documents?.length > 0 ? `${res.data.response}\n\n数据来源：\n\n>${res.data.source_documents.join('>')}` : res.data.response
-          updateChat(
-            uuid.value,
-            dataSources.value.length - 1,
-            {
-              dateTime: new Date().toLocaleString(),
-              text: lastText + (result ?? ''),
-              inversion: false,
-              error: false,
-              loading: false,
-              conversationOptions: null,
-              requestOptions: { prompt: message, options: { ...options } },
-            },
-          )
-          scrollToBottomIfAtBottom()
-          loading.value = false
-          onRegenerateing.value = false
-          updateChatSome(uuid.value, dataSources.value.length - 1, { loading: false })
-      }
-    }
-    await fetchChatAPIOnce()
-  }
-  catch (error: any) {
-    if (error.message === 'canceled') {
-      updateChatSome(
-        uuid.value,
-        dataSources.value.length - 1,
-        {
-          loading: false,
-        },
-      )
-      return
-    }
-    const errorMessage = error?.message ?? t('common.wrong')
-    updateChat(
-      uuid.value,
-      dataSources.value.length - 1,
-      {
-        dateTime: new Date().toLocaleString(),
-        text: errorMessage,
-        inversion: false,
-        error: true,
-        loading: false,
-        conversationOptions: null,
-        requestOptions: { prompt: message, options: { ...options } },
-      },
-    )
-  }
-  finally {
-    loading.value = false
-  }
-}
+//   try {
+//     const lastText = ''
+//     let res, result
+//     const fetchChatAPIOnce = async () => {
+//       // send prompt to get response
+//       switch (currentChatMode.value) {
+//         case 1:
+//           await postChatPublicRepoStream({
+//             question: message,
+//             history: history.value,
+//             model: 'claude 2',
+//             knowledge_base_id: chatStore.knowledgeRepo.filter((ele: any) => ele.selected)[0].children.filter((ele: any) => ele.checked).map((ele: any) => {
+//               return {
+//                 id: chatStore.knowledgeRepo.filter((ele: any) => ele.selected)[0].name,
+//                 filter: 'time',
+//                 timeRange: [ele.startDate, ele.endDate],
+//               }
+//             }),
+//           }, message, dataSources.value.length - 1, options)
+//           return
+//         case 2:
+//           // eslint-disable-next-line no-case-declarations
+//           const kbs = chatStore.myFileList.filter((ele: any) => ele.selected).map(ele => ({
+//             id: ele.kb_name,
+//             type: 1,
+//             fileName: ele.children.filter((ele: { isSelected: any }) => ele.isSelected).map((ele: any) => ele.name),
+//           }))
+//           if (kbs[0].fileName.length === 0)
+//             messageFunction.error('请选择至少一个文件或先上传文件')
+//           await postChatMyKbStream({
+//             kbs,
+//             question: message,
+//             history: history.value,
+//             model: 'claude 2',
+//           }, message, dataSources.value.length - 1, options)
+//           return
+//         default:
+//           res = await chat({
+//             question: message,
+//             history: history.value,
+//           })
+//           result = res.data.source_documents?.length > 0 ? `${res.data.response}\n\n数据来源：\n\n>${res.data.source_documents.join('>')}` : res.data.response
+//           updateChat(
+//             uuid.value,
+//             dataSources.value.length - 1,
+//             {
+//               dateTime: new Date().toLocaleString(),
+//               text: lastText + (result ?? ''),
+//               inversion: false,
+//               error: false,
+//               loading: false,
+//               conversationOptions: null,
+//               requestOptions: { prompt: message, options: { ...options } },
+//             },
+//           )
+//           scrollToBottomIfAtBottom()
+//           loading.value = false
+//           onRegenerateing.value = false
+//           updateChatSome(uuid.value, dataSources.value.length - 1, { loading: false })
+//       }
+//     }
+//     await fetchChatAPIOnce()
+//   }
+//   catch (error: any) {
+//     if (error.message === 'canceled') {
+//       updateChatSome(
+//         uuid.value,
+//         dataSources.value.length - 1,
+//         {
+//           loading: false,
+//         },
+//       )
+//       return
+//     }
+//     const errorMessage = error?.message ?? t('common.wrong')
+//     updateChat(
+//       uuid.value,
+//       dataSources.value.length - 1,
+//       {
+//         dateTime: new Date().toLocaleString(),
+//         text: errorMessage,
+//         inversion: false,
+//         error: true,
+//         loading: false,
+//         conversationOptions: null,
+//         requestOptions: { prompt: message, options: { ...options } },
+//       },
+//     )
+//   }
+//   finally {
+//     loading.value = false
+//   }
+// }
 
 function clearQuote() {
   chatStore.setQuote('')
@@ -682,125 +683,121 @@ watch(chatStore, () => {
     prompt.value = chatStore.selectedQuery
     onConversation()
   }
-
-  currentChatMode.value = chatStore.chatMode
-  currentFolder.value = chatStore.chatMode === 1 ? chatStore?.knowledgeRepo?.filter((ele: any) => ele.selected)[0]?.name : chatStore.myFileList.filter((ele: any) => ele.selected)[0]?.kb_name
-
-  currentSelectedFiles.value = chatStore.myFileList.filter(ele => ele.selected)[0]?.children.filter((ele: { isSelected: any }) => ele.isSelected).map((ele: { name: any }) => ele.name)
 }, { deep: true })
 
 watch(appStore, () => {
   currentThemeName.value = appStore.theme
 })
-watch(currentFolder, async (newVal) => {
-  if (!newVal)
-    return
-  await chatStore.updateWholeChatByUuid(uuid.value, [])
-  await postConversationRecord(newVal
-    , accessToken.value).then(async (res) => {
-    const temp = res.data.data.map((ele: string) => (JSON.parse(ele))).map((ele: any) => {
-      return {
-        text: ele.content,
-        dateTime: ele.time,
-        loading: false,
-        inversion: ele.role === 'Human',
-        error: false,
-        selectedContent: ele.select_content,
-        shouldNotHaveRegenerateIcon: true,
-      }
-    })
-    const uuid = res.data.uid
-    await chatStore.updateWholeChatByUuid(uuid, temp)
-    await chatStore.setActive(uuid)
-    console.log('postConversationRecord', res)
-    router.replace({ name: 'Chat', params: { uuid: chatStore.active } })
-  })
+// watch(currentFolder, async (newVal) => {
+//   if (!newVal)
+//     return
+//   await chatStore.updateWholeChatByUuid(uuid.value, [])
+//   await postConversationRecord(newVal
+//     , accessToken.value).then(async (res) => {
+//     const temp = res.data.data.map((ele: string) => (JSON.parse(ele))).map((ele: any) => {
+//       return {
+//         text: ele.content,
+//         dateTime: ele.time,
+//         loading: false,
+//         inversion: ele.role === 'Human',
+//         error: false,
+//         selectedContent: ele.select_content,
+//         shouldNotHaveRegenerateIcon: true,
+//       }
+//     })
+//     const uuid = res.data.uid
+//     await chatStore.updateWholeChatByUuid(uuid, temp)
+//     await chatStore.setActive(uuid)
+//     console.log('postConversationRecord', res)
+//     router.replace({ name: 'Chat', params: { uuid: chatStore.active } })
+//   })
 
-  announcementContent.value = `已加载${kb_EN_CN_convertion[newVal] || newVal}，可以对此进行对话提问`
-  showAnnoucement.value = true
+//   announcementContent.value = `已加载${kb_EN_CN_convertion[newVal] || newVal}，可以对此进行对话提问`
+//   showAnnoucement.value = true
 
-  if (currentChatMode.value === 1) {
-    postGenerateGeneralQuery({ id: newVal, type: mapCurrentChatModeToType[currentChatMode.value] }, accessToken).then((res) => {
-      addChat(
-        uuid.value,
-        {
-          dateTime: new Date().toLocaleString(),
-          text: '2',
-          loading: false,
-          inversion: false,
-          error: false,
-          conversationOptions: null,
-          shouldNotHaveRegenerateIcon: true,
-          // below is about regenerate logic
-          requestOptions: {
-            prompt: 'generate general query',
-            options: {},
-          },
-          type: 'general_query',
-          generalQueryData: {
-            abstract: res.data.abstract,
-            querys: res.data.querys,
-          },
-        },
-      )
-      scrollToBottom()
-    })
-  }
-  else {
-    // 先判断该目录下是否有文件，没有文件不需要请求接口
-    if (!(currentSelectedFiles.value && currentSelectedFiles.value.length !== 0))
-      return
+//   if (currentChatMode.value === 1) {
+//     postGenerateGeneralQuery({ id: newVal, type: mapCurrentChatModeToType[currentChatMode.value] }, accessToken).then((res) => {
+//       addChat(
+//         uuid.value,
+//         {
+//           dateTime: new Date().toLocaleString(),
+//           text: '2',
+//           loading: false,
+//           inversion: false,
+//           error: false,
+//           conversationOptions: null,
+//           shouldNotHaveRegenerateIcon: true,
+//           // below is about regenerate logic
+//           requestOptions: {
+//             prompt: 'generate general query',
+//             options: {},
+//           },
+//           type: 'general_query',
+//           generalQueryData: {
+//             abstract: res.data.abstract,
+//             querys: res.data.querys,
+//           },
+//         },
+//       )
+//       scrollToBottom()
+//     })
+//   }
+//   else {
+//     // 先判断该目录下是否有文件，没有文件不需要请求接口
+//     // if (!(currentSelectedFiles.value && currentSelectedFiles.value.length !== 0))
+//     //   return
 
-    const payload = {
-      kb_name: currentFolder.value,
-      files_name: currentSelectedFiles.value,
-    }
-    const auth = accessToken?.value || ''
+//     const payload = {
+//       kb_name: currentFolder.value,
+//       // files_name: currentSelectedFiles.value,
+//     }
+//     const auth = accessToken?.value || ''
 
-    const debouncedPostGenerateAbstractInMyKb = _.debounce((payload: { files_name: any[] }, auth: string) => {
-      PostGenerateAbstractInMyKb([payload], auth)
-        .then((res) => {
-          // knowledgeContentRef.value = `${res.data.data.file_abstract?.map((ele: { name: any; abstract: any }) => `文件名称：${ele.name}\n总结：${ele.abstract}\n`).join('\n') || ''}`
-          addChat(
-            uuid.value,
-            {
-              dateTime: new Date().toLocaleString(),
-              text: '2',
-              loading: false,
-              inversion: false,
-              error: false,
-              conversationOptions: null,
-              shouldNotHaveRegenerateIcon: true,
-              // below is about regenerate logic
-              requestOptions: {
-                prompt: 'generate general query',
-                options: {},
-              },
-              type: 'abstract',
-              abstractData: {
-                kb_abstract: res.data.data.kb_abstract?.abstract ?? '',
-                file_abstract: res.data.data.file_abstract ?? [],
-              },
-            },
-          )
-          scrollToBottom()
-        })
-        .catch((err) => {
-          if (err === 401)
-            useMessage().error('401,请重新登录')
-        })
-    }, 1500)
+//     const debouncedPostGenerateAbstractInMyKb = _.debounce((payload: { files_name: any[] }, auth: string) => {
+//       PostGenerateAbstractInMyKb([payload], auth)
+//         .then((res) => {
+//           // knowledgeContentRef.value = `${res.data.data.file_abstract?.map((ele: { name: any; abstract: any }) => `文件名称：${ele.name}\n总结：${ele.abstract}\n`).join('\n') || ''}`
+//           addChat(
+//             uuid.value,
+//             {
+//               dateTime: new Date().toLocaleString(),
+//               text: '2',
+//               loading: false,
+//               inversion: false,
+//               error: false,
+//               conversationOptions: null,
+//               shouldNotHaveRegenerateIcon: true,
+//               // below is about regenerate logic
+//               requestOptions: {
+//                 prompt: 'generate general query',
+//                 options: {},
+//               },
+//               type: 'abstract',
+//               abstractData: {
+//                 kb_abstract: res.data.data.kb_abstract?.abstract ?? '',
+//                 file_abstract: res.data.data.file_abstract ?? [],
+//               },
+//             },
+//           )
+//           scrollToBottom()
+//         })
+//         .catch((err) => {
+//           if (err === 401)
+//             useMessage().error('401,请重新登录')
+//         })
+//     }, 1500)
 
-    debouncedPostGenerateAbstractInMyKb(payload, auth)
-  }
-})
-watch(showAnnoucement, (newVal) => {
-  if (newVal) {
-    setTimeout(() => {
-      showAnnoucement.value = false
-    }, 3000)
-  }
-})
+//     debouncedPostGenerateAbstractInMyKb(payload, auth)
+//   }
+// })
+// watch(showAnnoucement, (newVal) => {
+//   if (newVal) {
+//     setTimeout(() => {
+//       showAnnoucement.value = false
+//     }, 3000)
+//   }
+// })
+
 watch(() => route.params.uuid, (newUuid, _oldUuid) => {
   uuid.value = newUuid
 })

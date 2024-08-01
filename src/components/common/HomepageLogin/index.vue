@@ -6,7 +6,6 @@ import { useRouter } from 'vue-router'
 import { debounce } from 'lodash'
 import { PostLoginToChat, PostSignupToChat, getSms } from '@/api/chat'
 import { useUserStore } from '@/store'
-
 interface Props {
   visible: boolean
 }
@@ -505,5 +504,8 @@ const getSmsCode = () => {
 
 .n-tabs-tab__label {
   color: black !important; /* Force the color to black */
+}
+:deep(.n-input__textarea) { /* Accesses the nested input element */
+  color: black !important; 
 }
 </style>
