@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted,nextTick } from 'vue';
 import { useRoute } from 'vue-router'
 import { Message } from '@/components/views/chat/components'
 import { NButton, NInput,useMessage } from 'naive-ui'
@@ -58,7 +58,11 @@ const handleSubmit = () => {
 	if (loading.value) {
 		return
 	}
-	scrollToBottom()
+	// scrollToBottom()
+	console.log('handleSubmit,footerRef.value',footerRef.value)
+	// footerRef.value.scrollIntoView({
+    //   behavior: 'smooth', // Smooth scrolling animation
+    // }); 
 	onConversation()
 	prompt.value = ''
 }
@@ -254,7 +258,12 @@ async function onConversation() {
 			requestOptions: { prompt: message, options: null },
 		},
 	)
-	scrollToBottom()
+	// scrollToBottom()
+	nextTick(() => { // Ensure DOM updates before scrolling
+    if (footerRef.value) {
+      footerRef.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
 
 	// 清理选中 query
 	clearSelectedQuery()
@@ -287,7 +296,17 @@ async function onConversation() {
 			requestOptions: { prompt: message, options: { ...options } },
 		},
 	)
-	scrollToBottom()
+	// scrollToBottom()
+	// footerRef.value.scrollIntoView({
+    //   behavior: 'smooth', // Smooth scrolling animation
+    //   block: 'start' // Scroll to the top of the element (optional)
+    // }); 
+
+	nextTick(() => { // Ensure DOM updates before scrolling
+    if (footerRef.value) {
+      footerRef.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
 
 	try {
 		const lastText = ''
@@ -538,11 +557,6 @@ onMounted(() => {
 	PostLoginToChat({ password: "secret", username: "admin" }).then((res) => {
 		userStore.setAccessToken(res.data.data.access_token)
 	})
-	// console.log("onMounted",scrollRef.value,scrollRef.value.scrollTop,scrollRef.value.scrollHeight)
-	// // scrollToBottom()
-	// if (scrollRef.value) {    // Make sure the element exists
-    // scrollRef.value.scrollTop = scrollRef.value.scrollHeight;  // Scroll to the bottom
-	// console.log("onMounted2",scrollRef.value,scrollRef.value.scrollTop,scrollRef.value.scrollHeight)}
 	footerRef.value.scrollIntoView({
       behavior: 'smooth', // Smooth scrolling animation
       block: 'start' // Scroll to the top of the element (optional)
@@ -551,10 +565,10 @@ onMounted(() => {
 })
 </script>
 <template>
-	<div id="scrollRef" ref="scrollRef" class="flex flex-col w-full h-full bg-grey " style="position: relative;background: rgba(245, 247, 253, 1);">
+	<div  class="flex flex-col w-full h-full bg-grey " style="position: relative;background: rgba(245, 247, 253, 1);">
 		<main class="overflow-hidden" style="height: calc(100% - footerRef.value?.clientHeight);flex:9">
-			<!-- id="scrollRef" ref="scrollRef" -->
-			<div class="h-full overflow-hidden overflow-y-auto">
+			<div class="h-full overflow-hidden overflow-y-auto" 			id="scrollRef" ref="scrollRef"
+			>
 				<div id="image-wrapper" class="w-full h-full max-w-screen-xl m-auto dark:bg-[#101014]"
 				style="background: rgba(245, 247, 253, 1);"
 				>
