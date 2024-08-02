@@ -1,19 +1,17 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted,nextTick } from 'vue';
+import { ref, computed, onMounted,nextTick, VNodeChild } from 'vue';
 import { useRoute } from 'vue-router'
 import { Message } from '@/components/views/chat/components'
-import { NButton, NInput,useMessage } from 'naive-ui'
+import { NInput,useMessage } from 'naive-ui'
 import new_conversation from '@/assets/new_conversation.png'
-import { useAppStore, useChatStore, useUserStore } from '@/store'
+import { useChatStore, useUserStore } from '@/store'
 import { useScroll } from '@/components/views/chat/hooks/useScroll';
 import { useChat } from '@/components/views/chat/hooks/useChat'
 import { chat, chatMyKbStream, styleConverstionStream, PostQueryMerge } from '@/api/chat';
 import { t } from '@/locales';
-import { PostLoginToChat } from '@/api/chat'
 import { useStyledChatStore } from '@/store/modules/styledChat';
 const { addChat, updateChat, updateChatSome, getChatByUuidAndIndex, updateWholeChatByUuid, } = useChat()
 const messageFunction = useMessage()
-const appStore = useAppStore()
 const userStore = useUserStore()
 const chatStore = useChatStore()
 const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom } = useScroll()
@@ -21,15 +19,20 @@ const route = useRoute()
 const uuid = ref<any>(route.params.uuid)
 const dataSources = computed(() => chatStore.getChatByUuid(uuid.value) ?? [])
 const isMobile = ref(false)
-const currentThemeName = ref(appStore.theme)
 const loading = ref(false)
 const currentChatMode = ref(1)
 const stopCtrl = ref<any>()
 const footerRef = ref(null); // Ref for the element you want to scroll to
-
+const placeholder = ref('你可以这样输入:帮我改写下面这段话:文字…')
+const prompt = ref<string>('')
+const quoteStr = ref<string>('')
+const queryContent = ref("")
+const onRegenerateing = ref(false)
+let controller = new AbortController()
+const conversationList = computed(() => dataSources.value.filter(item => (!item.inversion && !!item.conversationOptions)))
 const accessToken = computed(() => userStore.accessToken)
 const styledChatStore = useStyledChatStore()
-const history = computed(() => dataSources.value.map(item => item.text).reduce((acc:any[], item, index) => {
+const history = computed(() => dataSources.value.map(item => item.text).reduce((acc:any[], item: any, index: number) => {
     const chunkIndex = Math.floor(index / 2);
     if (!acc[chunkIndex]) {
         acc[chunkIndex] = []; // Start a new chunk
@@ -38,10 +41,7 @@ const history = computed(() => dataSources.value.map(item => item.text).reduce((
     return acc;
 }, []))
 const clearQuote = () => { }
-const handleSpeech = () => { }
-const handleKeyDown = (event) => {
-	console.log('handleKeyDown',event)
-	//listen to the combination of shift + enter
+const handleKeyDown = (event: { key: string; shiftKey: any; }) => {
 	if (event.key === 'Enter' && event.shiftKey) {
 		console.log('Shift + Enter')
 		return
@@ -58,28 +58,15 @@ const handleSubmit = () => {
 	if (loading.value) {
 		return
 	}
-	// scrollToBottom()
-	console.log('handleSubmit,footerRef.value',footerRef.value)
-	// footerRef.value.scrollIntoView({
-    //   behavior: 'smooth', // Smooth scrolling animation
-    // }); 
 	onConversation()
 	prompt.value = ''
 }
 const createNewConvesation = () => {
+	console.log("createNewConvesation")
 	updateWholeChatByUuid(uuid.value, [])
 	prompt.value = ''
 }
-const placeholder = ref('请输入内容')
-const prompt = ref<string>('')
-const quoteStr = ref<string>('')
-const speeching = ref(false)
-const speechOn = ref('')
-const speechOff = ref('')
-const queryContent = ref("")
-const onRegenerateing = ref(false)
-let controller = new AbortController()
-const conversationList = computed(() => dataSources.value.filter(item => (!item.inversion && !!item.conversationOptions)))
+
 function clearSelectedQuery() {
 	chatStore.setSelectedQuery('')
 
@@ -169,7 +156,7 @@ const postChatPublicRepoStream = async (params: any, message: string, chatIdx: n
 			userStore.accessToken,
 			() => {
 			},
-			(data) => {
+			(data: { answer: string; source_documents: any; }) => {
 				if (!stopCtrl.value.get(chatIdx)) {
 					lastText = lastText + data.answer
 					const result = lastText
@@ -194,7 +181,7 @@ const postChatPublicRepoStream = async (params: any, message: string, chatIdx: n
 					scrollToBottomIfAtBottom()
 				}
 			},
-			(error) => {
+			(error: string|(() => VNodeChild)) => {
 				messageFunction.error(error)
 				if (!stopCtrl.value.get(chatIdx)) {
 					loading.value = false
@@ -423,6 +410,7 @@ async function onConversation() {
 	}
 }
 
+//@ts-ignore
 async function onRegenerate() {
 	if (loading.value)
 		return
@@ -554,10 +542,8 @@ onMounted(() => {
 	if (!getChatByUuidAndIndex(uuid.value, 0)) {
 		updateWholeChatByUuid(uuid.value, [])
 	}
-	PostLoginToChat({ password: "secret", username: "admin" }).then((res) => {
-		userStore.setAccessToken(res.data.data.access_token)
-	})
-	footerRef.value.scrollIntoView({
+	//@ts-ignore
+	footerRef?.value?.scrollIntoView({
       behavior: 'smooth', // Smooth scrolling animation
       block: 'start' // Scroll to the top of the element (optional)
     }); 
@@ -565,7 +551,7 @@ onMounted(() => {
 })
 </script>
 <template>
-	<div  class="flex flex-col w-full h-full bg-grey " style="position: relative;background: rgba(245, 247, 253, 1);">
+	<div  class="flex flex-col w-full h-full bg-grey " style="position: relative;background: rgba(245, 247, 253, 1); padding-left:266px;padding-right:266px;">
 		<main class="overflow-hidden" style="height: calc(100% - footerRef.value?.clientHeight);flex:9">
 			<div class="h-full overflow-hidden overflow-y-auto" 			id="scrollRef" ref="scrollRef"
 			>
@@ -587,12 +573,14 @@ onMounted(() => {
 		<footer ref="footerRef" class="pt-3 pb-1" style="height: fit-content;margin-left: 20px;margin-right: 20px;">
 			<div class="w-full max-w-screen-xl m-auto flex align-center" style="height: fit-content; min-height: 50px;">
 				<div class="w-full flex" style="position: relative; height: fit-content;min-height: 50px;">
-					<div>
+					<div style="background-color: rgba(255, 255, 255, 1); width: 50px; height:50px;display:flex; justify-content:center;align-items:center; border-radius:2px;margin-right:10px;">
 						<img class="speech-button"               :src = 'new_conversation'
-						style="opacity: 1" @click="createNewConvesation">
+						style="width: 30px; height:30px;opacity: 1; " @click="createNewConvesation">
 					</div>
 					<NInput ref="inputRef" v-model:value="prompt" class="flex items-center justify-center"
-						style="padding-right: 50px; height: 100%;min-height: 50px;border-radius: 10px 10px 10px 10px"
+						style="padding-right: 50px; height: 100%;min-height: 50px;
+						background-color: white !important;
+						border-radius: 10px 10px 10px 10px"
 						type="textarea" :placeholder="placeholder" :autosize="{ minRows: 1, maxRows: isMobile ? 4 : 8 }"
 						@keyup.enter="handleKeyDown" />
 					<div>
@@ -604,10 +592,13 @@ onMounted(() => {
 	</div>
 </template>
 <style scoped lang="less">
+
+.n-input__placeholder{
+	color:red !important;
+}
 #app {
 	background-image: url(../../assets/bg.jpg);
 	background-size: 100% 100%;
-
 }
 
 .rotate-image {
@@ -647,10 +638,7 @@ onMounted(() => {
 }
 
 .speech-button {
-	// position: absolute;
-	// bottom: 5px;
-	// right: 50px;
-	width: 40px !important;
+	
 }
 
 .submit-button {

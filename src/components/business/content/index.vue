@@ -31,7 +31,7 @@ onMounted(async () => {
     :default-size="0.2"
     :resize-trigger-size="16"
     :min="0.2"
-    :max="0.8"
+    :max="0.5"
   >
     <template #1 >
       <div ref="leftSide" class="leftSide"  style="overflow-y: scroll;overflow-x:scroll">
