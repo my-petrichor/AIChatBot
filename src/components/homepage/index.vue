@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const Login = defineAsyncComponent(() => import('@/components/common/HomepageLogin/index.vue'))
-const clickButton = () => {
-  
+const onClick = (name) => {
+	router.push({
+		name: name,
+	})
 }
+
+
 </script>
 
 <template>
@@ -28,20 +34,20 @@ const clickButton = () => {
 						<div :style="{ fontSize: '50px', fontWeight: 'bold'}">AI零售营销</div>
 						<div :style="{ fontSize: '25px'}">助力零售业绩</div>
 					</div>
-					<div class="middleContentiImage">
+					<div class="middleContentiImage" @click="onClick('marketingWriting')">
 						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
 						<div :style="{ fontSize: '20px'}">AI营销写作</div>
 					</div>
-					<div class="middleContentiImage">
-						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+					<div class="middleContentiImage" @click="onClick('styleChange')">
+						<div><img src="@/assets/avatar.jpg" alt="AI风格改写"></div>
 						<div :style="{ fontSize: '20px'}">AI风格改写</div>
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div><img src="@/assets/avatar.jpg" alt="RAP自动运营账号"></div>
 						<div :style="{ fontSize: '20px'}">RAP自动运营账号</div>
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div><img src="@/assets/avatar.jpg" alt="营销决策，智能辅助"></div>
 						<div :style="{ fontSize: '20px'}">营销决策，智能辅助</div>
 					</div>
         </div>
@@ -50,16 +56,16 @@ const clickButton = () => {
 						<div :style="{ fontSize: '50px', fontWeight: 'bold'}">AI顾客营销</div>
 						<div :style="{ fontSize: '25px'}">老顾客回流、提频</div>
 					</div>
-					<div class="middleContentiImage">
-						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+					<div class="middleContentiImage" @click="onClick('memeberPromotionCopywriting')">
+						<div><img src="@/assets/avatar.jpg" alt="会员促活文案"></div>
 						<div :style="{ fontSize: '20px'}">会员促活文案</div>
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div><img src="@/assets/avatar.jpg" alt="只能评论处理"></div>
 						<div :style="{ fontSize: '20px'}">只能评论处理</div>
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div><img src="@/assets/avatar.jpg" alt="客诉智能回复"></div>
 						<div :style="{ fontSize: '20px'}">客诉智能回复</div>
 					</div>
         </div>
@@ -69,15 +75,15 @@ const clickButton = () => {
 						<div :style="{ fontSize: '25px'}">赋能中断人员成长</div>
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div><img src="@/assets/avatar.jpg" alt="AI随身专家"></div>
 						<div :style="{ fontSize: '20px'}">AI随身专家</div>
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div><img src="@/assets/avatar.jpg" alt="智能培训"></div>
 						<div :style="{ fontSize: '20px'}">智能培训</div>
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
+						<div><img src="@/assets/avatar.jpg" alt="智能督导"></div>
 						<div :style="{ fontSize: '20px'}">智能督导</div>
 					</div>
         </div>
@@ -141,6 +147,7 @@ const clickButton = () => {
 				display: flex;
 				justify-content: flex-start;
 				flex-direction: row;
+				cursor: pointer;
 				
 				.lingshouyingxiaoLeft{
 					display: flex;
