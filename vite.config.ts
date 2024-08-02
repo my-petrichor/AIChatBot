@@ -46,6 +46,13 @@ export default defineConfig((env) => {
           changeOrigin: true, // 允许跨域
           rewrite: path => path.replace('/api/', ''),
         },
+        '/api2': {
+					target: 'http://120.48.158.17:1004',
+          changeOrigin: true, // 允许跨域
+					rewrite: (path) => {
+						return path.replace(/^\/api2/, '');
+					}
+        },
         '/static1': {
           target: 'http://120.48.109.89:7861',
           changeOrigin: true, // 允许跨域

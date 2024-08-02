@@ -3,13 +3,21 @@ import type { AxiosResponse } from 'axios'
 import axios from 'axios'
 
 import { useMessage } from 'naive-ui'
-const instance = axios.create({
+const request = axios.create({
   // process.env.NODE_ENV === 'development' 来判断是否开发环境
   baseURL: window.baseApi ?? '/api',
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
   },
   // timeout: 5000,
+})
+const request2 = axios.create({
+	// process.env.NODE_ENV === 'development' 来判断是否开发环境
+	baseURL: window.baseApi ?? '/api2',
+	headers: {
+		'Content-Type': 'application/json;charset=UTF-8',
+	},
+	// timeout: 5000,
 })
 const message = useMessage()
 // const userStore = useUserStore()
@@ -32,7 +40,7 @@ const message = useMessage()
 // });
 // const userStore = useUserStore()
 
-instance.interceptors.response.use(
+request.interceptors.response.use(
   (response: AxiosResponse) => {
     if (response) {
       switch (response.data.code) {
@@ -90,4 +98,65 @@ instance.interceptors.response.use(
   },
 )
 
-export default instance
+request2.interceptors.response.use(
+	(response: AxiosResponse) => {
+		if (response) {
+			switch (response.data.code) {
+				case 103:
+					console.log('103')
+					// showCustomAlert("token过期，将跳转并重新登录")
+					sessionStorage.removeItem('xtoken')
+					window.location.href = '/'
+					break
+				case 200:
+					// return Promise.reject(response.data.code);
+
+					break
+				case 401:
+					// 返回 401 清除token信息并跳转到登录页面
+					console.log('401')
+					// message.error('401')
+					// alert('401,请重新登录或刷新页面')
+					sessionStorage.removeItem('xtoken')
+					window.location.href = '/'
+					break
+				case 403:
+					console.log('403')
+					break
+
+				case 404:
+					console.log('404')
+					break
+				case 500:
+					console.log('500')
+
+					// message.error('500')
+					break
+			}
+		}
+		return response
+	},
+	async (error) => {
+		if (error.response) {
+			switch (error.response.status) {
+				case 401:
+					// 返回 401 清除token信息并跳转到登录页面
+					// message.error('401')
+					// alert('401,请重新登录或刷新页面')
+					sessionStorage.removeItem('xtoken')
+					// window.location.href = '/'
+					break
+				case 403:
+					message.error('403')
+					break
+				case 404:
+					message.error('404')
+					break
+				case 500:
+					message.error('500')
+			}
+		}
+		return await Promise.reject()
+	},
+)
+export { request, request2 }
