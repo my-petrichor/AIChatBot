@@ -18,11 +18,11 @@ const onClick = (name) => {
     <div class="header">
 			<div class="headerUnit">
 				<div class="headerLeft">
-      		<img src="@/assets/logo.png" alt="Logo">
+      		<img src="@/assets/logo black.png" alt="Logo">
 				</div>
 				<div class="headerRight">
-					<div :style="{ marginRight: '10px'}">Username</div>
-					<div class="experience" @click="clickButton">退出</div>
+					<div class="userName">Username</div>
+					<div class="button" @click="clickButton"><div class="buttonText">退出</div></div>
 				</div>
 			</div>
     </div>
@@ -30,70 +30,88 @@ const onClick = (name) => {
     <div class="middleContent">
       <div class="unit">
         <div class="lingshouyingxiao">
-					<div class='lingshouyingxiaoLeft'>
-						<div :style="{ fontSize: '50px', fontWeight: 'bold'}">AI零售营销</div>
-						<div :style="{ fontSize: '25px'}">助力零售业绩</div>
+					<div class='middleContentiImageLeft'>
+						<img src="@/assets/AI零售营销.png" alt="AI零售营销">
 					</div>
 					<div class="middleContentiImage" @click="onClick('marketingWriting')">
-						<div><img src="@/assets/avatar.jpg" alt="AI营销写作"></div>
-						<div :style="{ fontSize: '20px'}">AI营销写作</div>
+						<div><img src="@/assets/AI营销写作.png" alt="AI营销写作"></div>
+						<div class="middleContentImageText">AI营销写作</div>
+					</div>
+					<div class="rectangle">
+							<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage" @click="onClick('styleChange')">
-						<div><img src="@/assets/avatar.jpg" alt="AI风格改写"></div>
-						<div :style="{ fontSize: '20px'}">AI风格改写</div>
+						<div><img src="@/assets/AI风格改写.png" alt="AI风格改写"></div>
+						<div class='middleContentImageText'>AI风格改写</div>
+					</div>
+					<div class="rectangle">
+							<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/avatar.jpg" alt="RAP自动运营账号"></div>
+						<div><img src="@/assets/RPA自动运营账号.png" alt="RAP自动运营账号"></div>
 						<div :style="{ fontSize: '20px'}">RAP自动运营账号</div>
 					</div>
+					<div class="rectangle">
+							<img src="@/assets/矩形 42455.png">
+					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/avatar.jpg" alt="营销决策，智能辅助"></div>
+						<div><img src="@/assets/营销决策，智能辅助.png" alt="营销决策，智能辅助"></div>
 						<div :style="{ fontSize: '20px'}">营销决策，智能辅助</div>
 					</div>
         </div>
 				<div class="gukeyingxiao">
-					<div class='gukeyingxiaoLeft'>
-						<div :style="{ fontSize: '50px', fontWeight: 'bold'}">AI顾客营销</div>
-						<div :style="{ fontSize: '25px'}">老顾客回流、提频</div>
+					<div class='middleContentiImageLeft'>
+						<img src="@/assets/AI顾客营销.png" alt="AI顾客营销">
 					</div>
 					<div class="middleContentiImage" @click="onClick('memeberPromotionCopywriting')">
-						<div><img src="@/assets/avatar.jpg" alt="会员促活文案"></div>
+						<div><img src="@/assets/会员促活话术智能生成.png" alt="会员促活文案"></div>
 						<div :style="{ fontSize: '20px'}">会员促活文案</div>
 					</div>
-					<div class="middleContentiImage">
-						<div><img src="@/assets/avatar.jpg" alt="只能评论处理"></div>
-						<div :style="{ fontSize: '20px'}">只能评论处理</div>
+					<div class="rectangle">
+							<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/avatar.jpg" alt="客诉智能回复"></div>
+						<div><img src="@/assets/智能评论处理.png" alt="只能评论处理"></div>
+						<div :style="{ fontSize: '20px'}">只能评论处理</div>
+					</div>
+					<div class="rectangle">
+							<img src="@/assets/矩形 42455.png">
+					</div>
+					<div class="middleContentiImage">
+						<div><img src="@/assets/客诉智能回复.png" alt="客诉智能回复"></div>
 						<div :style="{ fontSize: '20px'}">客诉智能回复</div>
 					</div>
         </div>
 				<div class="qiangjigongcheng">
-					<div class='qiangjigongchengLeft'>
-						<div :style="{ fontSize: '50px', fontWeight: 'bold'}">强基工程</div>
-						<div :style="{ fontSize: '25px'}">赋能中断人员成长</div>
+					<div class='middleContentiImageLeft'>
+						<img src="@/assets/强基工程.png" alt="强基工程">
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/avatar.jpg" alt="AI随身专家"></div>
+						<div><img src="@/assets/AI随身专家.png" alt="AI随身专家"></div>
 						<div :style="{ fontSize: '20px'}">AI随身专家</div>
 					</div>
-					<div class="middleContentiImage">
-						<div><img src="@/assets/avatar.jpg" alt="智能培训"></div>
-						<div :style="{ fontSize: '20px'}">智能培训</div>
+					<div class="rectangle">
+							<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/avatar.jpg" alt="智能督导"></div>
+						<div><img src="@/assets/智能培训.png" alt="智能培训"></div>
+						<div :style="{ fontSize: '20px'}">智能培训</div>
+					</div>
+					<div class="rectangle">
+							<img src="@/assets/矩形 42455.png">
+					</div>
+					<div class="middleContentiImage">
+						<div><img src="@/assets/智能督导.png" alt="智能督导"></div>
 						<div :style="{ fontSize: '20px'}">智能督导</div>
 					</div>
         </div>
       </div>
     </div>
 		
-    <div class="flex-center flex bottom">
-      <div class="flex-center icp">
-        <a target="_blank" href="https://beian.miit.gov.cn">京ICP备2023030175号-1</a>
-      </div>
+    <div class="bottom">
+        <div class="bottomUnit">
+					<a class="icp" target="_blank" href="https://beian.miit.gov.cn">©2023xxxxxxxx｜京ICP备2023030175号</a>
+				</div>
     </div>
   </div>
 </template>
@@ -102,7 +120,7 @@ const onClick = (name) => {
 .index {
 	width: 100%;
 	overflow: scroll;
-	background-image: url('@/assets/首页bg.png');
+	background-image: url('@/assets/蒙版组 23.png');
 	background-size: cover;
 	background-position: center;
 	height: 100vh;
@@ -112,10 +130,10 @@ const onClick = (name) => {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		margin-top: 1vh;
+		margin-top: 0.83vh;
 
 		.headerUnit {
-			width: 72vw;
+			width: 62.5vw;
 			display: flex;
 			flex-direction: row;
 			justify-content:space-between;
@@ -128,107 +146,127 @@ const onClick = (name) => {
 		}
 	}
 
+	.userName{
+		width: 75px;
+		height: 22px;
+		font-family: PingFang SC, PingFang SC;
+		font-weight: 400;
+		font-size: 16px;
+		color: #111111;
+		text-align: left;
+		font-style: normal;
+		text-transform: none;
+		margin-right: 0.52vw;
+	}
+	.button {
+		cursor: pointer;
+		justify-content: center;
+		align-items: center;
+		display: flex;
+		width: 62px;
+		height: 30px;
+		border-radius: 4px 4px 4px 4px;
+		border: 1px solid #4D50FD;
+
+		.buttonText{
+			width: 28px;
+			height: 20px;
+			font-family: PingFang SC, PingFang SC;
+			font-weight: 400;
+			font-size: 14px;
+			color: #4D50FD;
+			text-align: left;
+			font-style: normal;
+			text-transform: none;
+		}
+	}
+	
 	.middleContent {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		margin-top: 8vh;
+		margin-top: 10vh;
 
 		.unit {
-			width: 72vw;
-			height: 72vh;
+			width: 62.5vw;
+			height: 64.81vh;
 			display: flex;
 			flex-direction: column;
-			justify-content: space-around;
+			justify-content: space-between;
 			align-items: flex-start;
+
+			.rectangle{
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
 
 			.lingshouyingxiao {
 				width: 100%;
 				display: flex;
 				justify-content: flex-start;
 				flex-direction: row;
-				cursor: pointer;
-				
-				.lingshouyingxiaoLeft{
-					display: flex;
-					flex-direction: column;
-					justify-content: space-between;
-					width: 20%;
-				}
-				.middleContentiImage{
-					width: 20%;
-					display: flex;
-					flex-direction: column;
-					align-items: center;
-				}
 			}
 			.gukeyingxiao {
 				width: 100%;
 				display: flex;
 				justify-content: flex-start;
 				flex-direction: row;
-
-				.gukeyingxiaoLeft{
-					display: flex;
-					flex-direction: column;
-					justify-content: space-between;
-					width: 20%;
-				}
-				.middleContentiImage{
-					display: flex;
-					flex-direction: column;
-					align-items: center;
-					width: 20%;
-				}
-
 			}
 			.qiangjigongcheng {
 				width: 100%;
 				display: flex;
 				justify-content: flex-start;
 				flex-direction: row;
+			}
 
-				.qiangjigongchengLeft{
-					display: flex;
-					flex-direction: column;
-					justify-content: space-between;
-					width: 20%;
-				}
-				.middleContentiImage{
-					display: flex;
-					flex-direction: column;
-					align-items: center;
-					width: 20%;
+			.middleContentiImageLeft{
+				width: 18%;
+				border-radius: 0px 0px 0px 0px;
+			}
+
+			.middleContentiImage{
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				cursor: pointer;
+				width: 20.5%;
+
+				.middleContentImageText{
+					font-family: PingFang SC, PingFang SC;
+					font-weight: 400;
+					font-size: 20px;
+					color: #111111;
+					font-style: normal;
+					text-transform: none;
 				}
 			}
 		}
 	}
 
-	.flex-center {
-		width: 100%;
-		justify-content: center;
-		align-items: center;
-		display: flex;
-		margin-top: 4vh;
-	}
-
-	.experience {
-		cursor: pointer;
-		justify-content: center;
-		align-items: center;
-		display: flex;
-		font-size: 12px;
-	}
-
 	.bottom {
-		color: white;
+		width: 100%;
+		margin-top: 17.68vh;
+		display: flex;
+		align-items: center;
 		flex-direction: column;
-		margin-top: 50px;
-		font-size: 20px;
-	}
-	.icp {
-		color: #fff;
-		margin-bottom: 18px;
-	}
+		
+		.bottomUnit {
+			width: 62.5vw;
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+
+			.icp {
+				font-family: PingFang SC, PingFang SC;
+				font-weight: 400;
+				font-size: 14px;
+				color: rgba(0,0,0,0.7);
+				text-align: center;
+				font-style: normal;
+				text-transform: none;
+			}
+		}
+	}	
 }
 </style>
