@@ -1,10 +1,10 @@
+import { ApproveRegistration } from '@/components/business/approveRegistration'
+import { RejectRegistration } from '@/components/business/rejectRegistration'
+import { Homepage } from '@/components/homepage'
+import { ChatLayout } from '@/components/views/chat/layout'
 import type { App } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { ChatLayout } from '@/components/views/chat/layout'
-import { Homepage } from '@/components/homepage'
-import { ApproveRegistration } from '@/components/business/approveRegistration'
-import { RejectRegistration } from '@/components/business/rejectRegistration'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -32,6 +32,21 @@ const routes: RouteRecordRaw[] = [
     name: 'Base',
     redirect: '/index',
   },
+  // {
+  //   path: '/chat/stylechat/marketing_writing',
+  //   name: 'marketingWriting',
+  //   component: MarketingWriting,
+  // },
+  // {
+  //   path: '/chat/stylechat/style_change',
+  //   name: 'styleChange',
+  //   component: StyleChange,
+  // },
+  // {
+  //   path: '/chat/stylechat/memeber_promotion_copywriting',
+  //   name: 'memeberPromotionCopywriting',
+  //   component: MemeberPromotionCopywriting,
+  // }
 ]
 
 export const router = createRouter({
