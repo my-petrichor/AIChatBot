@@ -2,7 +2,7 @@
 <script setup lang='ts'>
 import{ ref } from 'vue'
 import {NSplit} from 'naive-ui'
-import LeftPanel from '@/components/styleChat/leftpanel/index.vue'
+import LeftPanel from '@/components/styleChat/leftPanel/index.vue'
 import RightPanel from '@/components/styleChat/rightPanel/index.vue'
 </script>
 

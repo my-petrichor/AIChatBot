@@ -8,7 +8,8 @@ import {
 
 
 import Chat from '@/components/styleChat/styledChat/index.vue'
-
+import LeftPanel from '@/components/styleChat/leftPanel/index.vue'
+import MemberPromotion from '@/components/styleChat/leftPanel/components/memberPromotion/index.vue'
 import { useChatStore } from '@/store'
 const leftSide = ref(null)
 const content = ref(null)
@@ -34,6 +35,7 @@ onMounted(async () => {
   >
     <template #1 >
       <div ref="leftSide" class="leftSide"  style="overflow-y: scroll;overflow-x:scroll">
+          <MemberPromotion />
       </div>
     </template>
     <template #2>
