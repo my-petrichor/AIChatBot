@@ -1,35 +1,50 @@
 <script setup lang="ts">
-import { defineAsyncComponent, ref } from 'vue'
+import { defineAsyncComponent, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAppStore, useUserStore } from '@/store'
 
+const showModal = ref(false)
+const isLogin = computed(() => userStore.isLogin)
 const router = useRouter()
 const Login = defineAsyncComponent(() => import('@/components/common/HomepageLogin/index.vue'))
+const userStore = useUserStore()
+
 const onClick = (name) => {
 	router.push({
 		name: name,
 	})
 }
 
+const clickButton = () => {
+	if (isLogin.value) {
+		userStore.setAccessToken('')
+		userStore.setLoginState(false)
+	} else {
+		showModal.value = true
+	}
+}
 
 </script>
 
 <template>
-  <div ref="index" class="index">
-    <div class="header">
+	<div ref="index" class="index">
+		<div class="header">
 			<div class="headerUnit">
 				<div class="headerLeft">
-      		<img src="@/assets/logo black.png" alt="Logo">
+					<img src="@/assets/logo black.png" alt="Logo">
 				</div>
 				<div class="headerRight">
-					<div class="userName">Username</div>
-					<div class="button" @click="clickButton"><div class="buttonText">退出</div></div>
+					<div class="userName">{{ isLogin ? userStore.userInfo.name : "" }}</div>
+					<div class="button" @click="clickButton">
+						<div class="buttonText">{{ isLogin ? '退出' : '登录' }}</div>
+					</div>
 				</div>
 			</div>
-    </div>
+		</div>
 
-    <div class="middleContent">
-      <div class="unit">
-        <div class="lingshouyingxiao">
+		<div class="middleContent">
+			<div class="unit">
+				<div class="lingshouyingxiao">
 					<div class='middleContentiImageLeft'>
 						<img src="@/assets/AI零售营销.png" alt="AI零售营销">
 					</div>
@@ -38,27 +53,27 @@ const onClick = (name) => {
 						<div class="middleContentImageTextLogin">AI营销写作</div>
 					</div>
 					<div class="rectangle">
-							<img src="@/assets/矩形 42455.png">
+						<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage" @click="onClick('styleChange')">
 						<div><img src="@/assets/AI风格改写.png" alt="AI风格改写"></div>
 						<div class='middleContentImageTextLogin'>AI风格改写</div>
 					</div>
 					<div class="rectangle">
-							<img src="@/assets/矩形 42455.png">
+						<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage">
 						<div><img src="@/assets/RPA自动运营账号灰.png" alt="RAP自动运营账号"></div>
 						<div class="middleContentImageTextUnLogin">RAP自动运营账号</div>
 					</div>
 					<div class="rectangle">
-							<img src="@/assets/矩形 42455.png">
+						<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage">
 						<div><img src="@/assets/营销决策，智能辅助灰.png" alt="营销决策，智能辅助"></div>
 						<div class="middleContentImageTextUnLogin">营销决策，智能辅助</div>
 					</div>
-        </div>
+				</div>
 				<div class="gukeyingxiao">
 					<div class='middleContentiImageLeft'>
 						<img src="@/assets/AI顾客营销.png" alt="AI顾客营销">
@@ -68,20 +83,20 @@ const onClick = (name) => {
 						<div class="middleContentImageTextLogin">会员促活文案</div>
 					</div>
 					<div class="rectangle">
-							<img src="@/assets/矩形 42455.png">
+						<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage">
 						<div><img src="@/assets/智能评论处理灰.png" alt="只能评论处理"></div>
 						<div class="middleContentImageTextUnLogin">只能评论处理</div>
 					</div>
 					<div class="rectangle">
-							<img src="@/assets/矩形 42455.png">
+						<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage">
 						<div><img src="@/assets/客诉智能回复灰.png" alt="客诉智能回复"></div>
 						<div class="middleContentImageTextUnLogin">客诉智能回复</div>
 					</div>
-        </div>
+				</div>
 				<div class="qiangjigongcheng">
 					<div class='middleContentiImageLeft'>
 						<img src="@/assets/强基工程.png" alt="强基工程">
@@ -91,29 +106,30 @@ const onClick = (name) => {
 						<div class="middleContentImageTextUnLogin">AI随身专家</div>
 					</div>
 					<div class="rectangle">
-							<img src="@/assets/矩形 42455.png">
+						<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage">
 						<div><img src="@/assets/智能培训灰.png" alt="智能培训"></div>
 						<div class="middleContentImageTextUnLogin">智能培训</div>
 					</div>
 					<div class="rectangle">
-							<img src="@/assets/矩形 42455.png">
+						<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage">
 						<div><img src="@/assets/智能督导灰.png" alt="智能督导"></div>
 						<div class="middleContentImageTextUnLogin">智能督导</div>
 					</div>
-        </div>
-      </div>
-    </div>
-		
-    <div class="bottom">
-        <div class="bottomUnit">
-					<a class="icp" target="_blank" href="https://beian.miit.gov.cn">©2023xxxxxxxx｜京ICP备2023030175号</a>
 				</div>
-    </div>
-  </div>
+			</div>
+		</div>
+
+		<div class="bottom">
+			<div class="bottomUnit">
+				<a class="icp" target="_blank" href="https://beian.miit.gov.cn">©2023xxxxxxxx｜京ICP备2023030175号</a>
+			</div>
+		</div>
+		<Login v-if="showModal" v-model:visible="showModal" />
+	</div>
 </template>
 
 <style scoped lang="less">
@@ -136,9 +152,9 @@ const onClick = (name) => {
 			width: 62.5vw;
 			display: flex;
 			flex-direction: row;
-			justify-content:space-between;
-			
-			.headerRight{
+			justify-content: space-between;
+
+			.headerRight {
 				display: flex;
 				flex-direction: row;
 				align-items: center;
@@ -146,7 +162,7 @@ const onClick = (name) => {
 		}
 	}
 
-	.userName{
+	.userName {
 		width: 75px;
 		height: 22px;
 		font-family: PingFang SC, PingFang SC;
@@ -158,6 +174,7 @@ const onClick = (name) => {
 		text-transform: none;
 		margin-right: 0.52vw;
 	}
+
 	.button {
 		cursor: pointer;
 		justify-content: center;
@@ -168,7 +185,7 @@ const onClick = (name) => {
 		border-radius: 4px 4px 4px 4px;
 		border: 1px solid #4D50FD;
 
-		.buttonText{
+		.buttonText {
 			width: 28px;
 			height: 20px;
 			font-family: PingFang SC, PingFang SC;
@@ -180,7 +197,7 @@ const onClick = (name) => {
 			text-transform: none;
 		}
 	}
-	
+
 	.middleContent {
 		display: flex;
 		flex-direction: column;
@@ -195,7 +212,7 @@ const onClick = (name) => {
 			justify-content: space-between;
 			align-items: flex-start;
 
-			.rectangle{
+			.rectangle {
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
@@ -207,12 +224,14 @@ const onClick = (name) => {
 				justify-content: flex-start;
 				flex-direction: row;
 			}
+
 			.gukeyingxiao {
 				width: 100%;
 				display: flex;
 				justify-content: flex-start;
 				flex-direction: row;
 			}
+
 			.qiangjigongcheng {
 				width: 100%;
 				display: flex;
@@ -220,13 +239,13 @@ const onClick = (name) => {
 				flex-direction: row;
 			}
 
-			.middleContentiImageLeft{
+			.middleContentiImageLeft {
 				width: 18%;
 				border-radius: 0px 0px 0px 0px;
 				margin-top: 4px;
 			}
 
-			.middleContentiImage{
+			.middleContentiImage {
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
@@ -262,7 +281,7 @@ const onClick = (name) => {
 		display: flex;
 		align-items: center;
 		flex-direction: column;
-		
+
 		.bottomUnit {
 			width: 62.5vw;
 			display: flex;
@@ -273,12 +292,12 @@ const onClick = (name) => {
 				font-family: PingFang SC, PingFang SC;
 				font-weight: 400;
 				font-size: 14px;
-				color: rgba(0,0,0,0.7);
+				color: rgba(0, 0, 0, 0.7);
 				text-align: center;
 				font-style: normal;
 				text-transform: none;
 			}
 		}
-	}	
+	}
 }
 </style>
