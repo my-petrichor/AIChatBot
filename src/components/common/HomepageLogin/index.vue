@@ -114,7 +114,8 @@ const login = (e: { preventDefault: () => void }) => {
               })
               userStore.setAccessToken(access_token)
               message.success('登录成功')
-              router.replace('/chat')
+              // router.replace('/chat')
+              emit('update:visible', false)
             }
             else {
               message.error('Login Failed,', res.data.msg)
@@ -153,7 +154,9 @@ const login = (e: { preventDefault: () => void }) => {
               })
               userStore.setAccessToken(access_token)
               message.success('登录成功')
-              router.replace('/chat')
+              // router.replace('/chat')
+              emit('update:visible', false)
+
             }
             else {
               message.error('Login Failed,', res.data.msg)

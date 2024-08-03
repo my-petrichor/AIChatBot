@@ -9,11 +9,10 @@ import {
 
 import Chat from '@/components/styleChat/styledChat/index.vue'
 
-import { useAppStore, useChatStore } from '@/store'
+import { useChatStore } from '@/store'
 const leftSide = ref(null)
 const content = ref(null)
 const chatStore = useChatStore()
-const appStore = useAppStore()
 const defaultModel = 'ChatGLM-6b'
 onBeforeMount(() => {
   chatStore.setChatMode(1)
