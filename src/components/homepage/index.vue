@@ -48,29 +48,37 @@ const clickButton = () => {
 					<div class='middleContentiImageLeft'>
 						<img src="@/assets/AI零售营销.png" alt="AI零售营销">
 					</div>
-					<div class="middleContentiImage" @click="onClick('marketingWriting')">
-						<div><img src="@/assets/AI营销写作.png" alt="AI营销写作"></div>
+					<div v-if="isLogin" class="middleContentiImage" @click="onClick('marketingWriting')">
+						<div class="middleContentImageLogin"><img src="@/assets/AI营销写作.png" alt="AI营销写作"></div>
 						<div class="middleContentImageTextLogin">AI营销写作</div>
+					</div>
+					<div v-else class="middleContentiImage">
+						<div class="middleContentImageUnLogin"><img  src="@/assets/AI营销写作.png" alt="AI营销写作"></div>
+						<div class="middleContentImageTextUnLogin">AI营销写作</div>
 					</div>
 					<div class="rectangle">
 						<img src="@/assets/矩形 42455.png">
 					</div>
-					<div class="middleContentiImage" @click="onClick('styleChange')">
-						<div><img src="@/assets/AI风格改写.png" alt="AI风格改写"></div>
+					<div v-if="isLogin" class="middleContentiImage" @click="onClick('styleChange')">
+						<div class="middleContentImageLogin"><img src="@/assets/AI风格改写.png" alt="AI风格改写"></div>
 						<div class='middleContentImageTextLogin'>AI风格改写</div>
+					</div>
+					<div v-else class="middleContentiImage">
+						<div class="middleContentImageUnLogin"><img src="@/assets/AI风格改写.png" alt="AI风格改写"></div>
+						<div class="middleContentImageTextUnLogin">AI风格改写</div>
 					</div>
 					<div class="rectangle">
 						<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/RPA自动运营账号灰.png" alt="RAP自动运营账号"></div>
+						<div class="middleContentImageUnLogin"><img src="@/assets/RPA自动运营账号.png" alt="RAP自动运营账号"></div>
 						<div class="middleContentImageTextUnLogin">RAP自动运营账号</div>
 					</div>
 					<div class="rectangle">
 						<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/营销决策，智能辅助灰.png" alt="营销决策，智能辅助"></div>
+						<div class="middleContentImageUnLogin"><img src="@/assets/营销决策，智能辅助.png" alt="营销决策，智能辅助"></div>
 						<div class="middleContentImageTextUnLogin">营销决策，智能辅助</div>
 					</div>
 				</div>
@@ -78,22 +86,26 @@ const clickButton = () => {
 					<div class='middleContentiImageLeft'>
 						<img src="@/assets/AI顾客营销.png" alt="AI顾客营销">
 					</div>
-					<div class="middleContentiImage" @click="onClick('memeberPromotionCopywriting')">
-						<div><img src="@/assets/会员促活话术智能生成.png" alt="会员促活文案"></div>
+					<div v-if="isLogin" class="middleContentiImage" @click="onClick('memeberPromotionCopywriting')">
+						<div class="middleContentImageLogin"><img src="@/assets/会员促活话术智能生成.png" alt="会员促活文案"></div>
 						<div class="middleContentImageTextLogin">会员促活文案</div>
+					</div>
+					<div v-else class="middleContentiImage">
+						<div class="middleContentImageUnLogin"><img src="@/assets/会员促活话术智能生成.png" alt="会员促活文案"></div>
+						<div class="middleContentImageTextUnLogin">会员促活文案</div>
 					</div>
 					<div class="rectangle">
 						<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/智能评论处理灰.png" alt="只能评论处理"></div>
+						<div class="middleContentImageUnLogin"><img src="@/assets/智能评论处理.png" alt="智能评论处理"></div>
 						<div class="middleContentImageTextUnLogin">只能评论处理</div>
 					</div>
 					<div class="rectangle">
 						<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/客诉智能回复灰.png" alt="客诉智能回复"></div>
+						<div class="middleContentImageUnLogin"><img src="@/assets/客诉智能回复.png" alt="客诉智能回复"></div>
 						<div class="middleContentImageTextUnLogin">客诉智能回复</div>
 					</div>
 				</div>
@@ -102,21 +114,21 @@ const clickButton = () => {
 						<img src="@/assets/强基工程.png" alt="强基工程">
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/AI随身专家灰.png" alt="AI随身专家"></div>
+						<div class="middleContentImageUnLogin"><img src="@/assets/AI随身专家.png" alt="AI随身专家"></div>
 						<div class="middleContentImageTextUnLogin">AI随身专家</div>
 					</div>
 					<div class="rectangle">
 						<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/智能培训灰.png" alt="智能培训"></div>
+						<div class="middleContentImageUnLogin"><img src="@/assets/智能培训.png" alt="智能培训"></div>
 						<div class="middleContentImageTextUnLogin">智能培训</div>
 					</div>
 					<div class="rectangle">
 						<img src="@/assets/矩形 42455.png">
 					</div>
 					<div class="middleContentiImage">
-						<div><img src="@/assets/智能督导灰.png" alt="智能督导"></div>
+						<div class="middleContentImageUnLogin"><img src="@/assets/智能督导.png" alt="智能督导"></div>
 						<div class="middleContentImageTextUnLogin">智能督导</div>
 					</div>
 				</div>
@@ -252,8 +264,11 @@ const clickButton = () => {
 				align-items: center;
 				width: 20.5%;
 				cursor: pointer;
-				
 
+				.middleContentImageUnLogin {
+					opacity: 0.3;
+				}
+				
 				.middleContentImageTextLogin{
 					font-family: PingFang SC, PingFang SC;
 					font-weight: 400;
