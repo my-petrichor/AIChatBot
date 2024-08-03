@@ -263,7 +263,10 @@ const clickButton = () => {
 				justify-content: center;
 				align-items: center;
 				width: 20.5%;
-				cursor: pointer;
+
+				.middleContentImageLogin {
+					cursor: pointer;
+				}
 
 				.middleContentImageUnLogin {
 					opacity: 0.3;
@@ -276,6 +279,7 @@ const clickButton = () => {
 					font-style: normal;
 					text-transform: none;
 					color: black;
+					cursor: pointer;
 				}
 
 				.middleContentImageTextUnLogin{
