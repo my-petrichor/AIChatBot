@@ -35,8 +35,11 @@ const clickButton = () => {
 				</div>
 				<div class="headerRight">
 					<div class="userName">{{ isLogin ? userStore.userInfo.name : "" }}</div>
-					<div class="button" @click="clickButton">
-						<div class="buttonText">{{ isLogin ? '退出' : '登录' }}</div>
+					<div v-if="isLogin" class="buttonLogin" @click="clickButton">
+						<div class="buttonTextLogin">{{ isLogin ? '退出' : '登录' }}</div>
+					</div>
+					<div v-else class="buttonLogout" @click="clickButton">
+						<div class="buttonTextLogout">{{ isLogin ? '退出' : '登录' }}</div>
 					</div>
 				</div>
 			</div>
@@ -187,7 +190,7 @@ const clickButton = () => {
 		margin-right: 0.52vw;
 	}
 
-	.button {
+	.buttonLogin {
 		cursor: pointer;
 		justify-content: center;
 		align-items: center;
@@ -197,13 +200,37 @@ const clickButton = () => {
 		border-radius: 4px 4px 4px 4px;
 		border: 1px solid #4D50FD;
 
-		.buttonText {
+		.buttonTextLogin {
 			width: 28px;
 			height: 20px;
 			font-family: PingFang SC, PingFang SC;
 			font-weight: 400;
 			font-size: 14px;
 			color: #4D50FD;
+			text-align: left;
+			font-style: normal;
+			text-transform: none;
+		}
+	}
+
+	.buttonLogout {
+		cursor: pointer;
+		justify-content: center;
+		align-items: center;
+		display: flex;
+		width: 62px;
+		height: 30px;
+		background: linear-gradient( 270deg, #4D46FD 0%, #506BFF 100%);
+		border-radius: 4px 4px 4px 4px;
+		
+
+		.buttonTextLogout {
+			width: 28px;
+			height: 20px;
+			font-family: PingFang SC, PingFang SC;
+			font-weight: 400;
+			font-size: 14px;
+			color: #FFFFFF;
 			text-align: left;
 			font-style: normal;
 			text-transform: none;
