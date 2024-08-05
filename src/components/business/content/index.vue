@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, onMounted, ref } from 'vue'
+import { onBeforeMount, onMounted, ref, computed } from 'vue'
 import {
   NSplit,
 } from 'naive-ui'
@@ -10,11 +10,15 @@ import {
 import Chat from '@/components/styleChat/styledChat/index.vue'
 import LeftPanel from '@/components/styleChat/leftPanel/index.vue'
 import MemberPromotion from '@/components/styleChat/leftPanel/components/memberPromotion/index.vue'
-import { useChatStore } from '@/store'
+import MarketingWriting from '@/components/styleChat/leftPanel/components/marketingWriting/index.vue'
+import SelectStyle from '@/components/styleChat/leftPanel/components/selectStyle/index.vue'
+import {useChatStore, useStyledChatStore} from '@/store'
 const leftSide = ref(null)
 const content = ref(null)
 const chatStore = useChatStore()
 const defaultModel = 'ChatGLM-6b'
+const styledChatStore = useStyledChatStore()
+const leftPanelType = computed(() => styledChatStore.leftPanelType)
 onBeforeMount(() => {
   chatStore.setChatMode(1)
 })
@@ -34,8 +38,12 @@ onMounted(async () => {
     :max="0.5"
   >
     <template #1 >
-      <div ref="leftSide" class="leftSide"  style="overflow-y: scroll;overflow-x:scroll">
-          <MemberPromotion />
+      <div ref="leftSide" class="leftSide"  style="position:fixed; overflow-y: scroll;overflow-x:scroll">
+          <MemberPromotion v-if="leftPanelType === 'MemberPromotion'" />
+          <MarketingWriting v-else-if="leftPanelType === 'MarketingWriting'" />
+          <SelectStyle v-else-if="leftPanelType === 'SelectStyle'" />
+          <SelectStyle v-else />
+<!--          <SelectStyle></SelectStyle>-->
       </div>
     </template>
     <template #2>

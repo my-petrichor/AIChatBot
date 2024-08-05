@@ -33,5 +33,13 @@ export const useStyledChatStore = defineStore("styledChat-store", {
 		recordState() {
 			setLocalSetting(this.$state);
 		},
+		setChatSendDisable(chatSendDisable: boolean) {
+			this.chatSendDisable = chatSendDisable;
+			this.recordState();
+		},
+		setLeftPanelType(leftPanelType: string) {
+			this.leftPanelType = leftPanelType;
+			this.recordState();
+		}
 	},
 });

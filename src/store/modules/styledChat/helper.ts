@@ -12,12 +12,14 @@ export interface StyleChatState {
 	language: Language
 	env: string
 	currentChatStyle: string
+	chatSendDisable: boolean
+	leftPanelType: string
 }
 
 export function defaultSetting(): StyleChatState {
 	return {siderCollapsed: false, theme: 'dark', language: 'zh-CN', env: process.env.NODE_ENV || 'production',
 
-		currentChatStyle: 'default'
+		currentChatStyle: 'default', chatSendDisable: false, leftPanelType: 'MarketingWritinglarge'
 	}
 }
 

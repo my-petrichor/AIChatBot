@@ -40,6 +40,10 @@ const history = computed(() => dataSources.value.map(item => item.text).reduce((
     acc[chunkIndex].push(item);
     return acc;
 }, []))
+
+// TODO: 根据chatSendDisable设置发送按钮 禁用与否
+const chatSendDisable = computed(() => styledChatStore.chatSendDisable)
+
 const clearQuote = () => { }
 const handleKeyDown = (event: { key: string; shiftKey: any; }) => {
 	if (event.key === 'Enter' && event.shiftKey) {

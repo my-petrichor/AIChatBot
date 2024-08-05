@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAppStore, useUserStore } from '@/store'
+import { useAppStore, useUserStore, useStyledChatStore } from '@/store'
 
 const showModal = ref(false)
 const isLogin = computed(() => userStore.isLogin)
 const router = useRouter()
 const Login = defineAsyncComponent(() => import('@/components/common/HomepageLogin/index.vue'))
 const userStore = useUserStore()
+const { setLeftPanelType } = useStyledChatStore()
+
+// TODO: 根据点击icon设置leftPanelType
+// setLeftPanelType("MemberPromotion")  // 会员促活文案
+// setLeftPanelType("MarketingWriting") // 营销写作
 
 const onClick = (name) => {
 	router.push({
