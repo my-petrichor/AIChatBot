@@ -6,10 +6,12 @@ import {
 } from 'naive-ui'
 import {useRouter} from "vue-router"
 import { ArrowBackIosFilled } from '@vicons/material'
+import { useStyledChatStore } from '@/store/modules/styledChat'
 
+const styledChatStore = useStyledChatStore();
 const router = useRouter()
 const presetForm = ref({
-    textStyle: '',
+    textStyle: 'test',
     inputText: '',
 })
 const textStyleList = ref<any>([])
@@ -25,6 +27,9 @@ const handleSubmit = () => {
         message.error('请填写完整的会员信息')
         return
     }
+    // set chatSendDisable
+    styledChatStore.setChatSendDisable(true)
+    styledChatStore.triggerEvent({ type: 'addChat', data: {...presetForm.value,type:'styledChat',prompt: `根据风格${presetForm.value.textStyle}改写以下文案${presetForm.value.inputText}`} });
     message.success('电子文案生成成功')
 }
 

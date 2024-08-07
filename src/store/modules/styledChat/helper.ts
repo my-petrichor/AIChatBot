@@ -19,7 +19,8 @@ export interface StyleChatState {
 export function defaultSetting(): StyleChatState {
 	return {siderCollapsed: false, theme: 'dark', language: 'zh-CN', env: process.env.NODE_ENV || 'production',
 
-		currentChatStyle: 'default', chatSendDisable: false, leftPanelType: 'MarketingWritinglarge'
+		currentChatStyle: 'default', chatSendDisable: false, leftPanelType: 'MarketingWritinglarge',
+		 latestEvent: null,
 	}
 }
 

@@ -27,7 +27,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="h-full transition-all" :class="[isMobile ? 'p-0' : 'p-0']">
+  <div class="h-full transition-all">
     <Header />
     <Content />
   </div>

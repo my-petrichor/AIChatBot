@@ -42,9 +42,6 @@ onMounted(() => {
 
 <template>
 	<div>
-<!--		<NH1>-->
-<!--			选择风格-->
-<!--		</NH1>-->
 		<div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
 			<NButton style="margin-bottom: 10px;
 	width: 80%;
@@ -53,6 +50,5 @@ onMounted(() => {
 				{{ item.name }}
 			</NButton>
 		</div>
-<!--		<MemberPromotion />-->
 	</div>
 </template>

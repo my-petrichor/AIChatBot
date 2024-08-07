@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted,nextTick, VNodeChild } from 'vue';
+import { ref, computed, onMounted, nextTick, VNodeChild, watch } from 'vue';
 import { useRoute } from 'vue-router'
 import { Message } from '@/components/views/chat/components'
-import { NInput,useMessage } from 'naive-ui'
+import { NInput, useMessage } from 'naive-ui'
 import new_conversation from '@/assets/new_conversation.png'
 import { useChatStore, useUserStore } from '@/store'
 import { useScroll } from '@/components/views/chat/hooks/useScroll';
@@ -10,6 +10,9 @@ import { useChat } from '@/components/views/chat/hooks/useChat'
 import { chat, chatMyKbStream, styleConverstionStream, PostQueryMerge } from '@/api/chat';
 import { t } from '@/locales';
 import { useStyledChatStore } from '@/store/modules/styledChat';
+import { storeToRefs } from 'pinia';
+const styledChatStore = useStyledChatStore();
+const { latestEvent } = storeToRefs(styledChatStore);
 const { addChat, updateChat, updateChatSome, getChatByUuidAndIndex, updateWholeChatByUuid, } = useChat()
 const messageFunction = useMessage()
 const userStore = useUserStore()
@@ -22,7 +25,7 @@ const isMobile = ref(false)
 const loading = ref(false)
 const currentChatMode = ref(1)
 const stopCtrl = ref<any>()
-const footerRef = ref(null); // Ref for the element you want to scroll to
+const footerRef = ref(null); 
 const placeholder = ref('你可以这样输入:帮我改写下面这段话:文字…')
 const prompt = ref<string>('')
 const quoteStr = ref<string>('')
@@ -31,19 +34,17 @@ const onRegenerateing = ref(false)
 let controller = new AbortController()
 const conversationList = computed(() => dataSources.value.filter(item => (!item.inversion && !!item.conversationOptions)))
 const accessToken = computed(() => userStore.accessToken)
-const styledChatStore = useStyledChatStore()
-const history = computed(() => dataSources.value.map(item => item.text).reduce((acc:any[], item: any, index: number) => {
-    const chunkIndex = Math.floor(index / 2);
-    if (!acc[chunkIndex]) {
-        acc[chunkIndex] = []; // Start a new chunk
-    }
-    acc[chunkIndex].push(item);
-    return acc;
+const history = computed(() => dataSources.value.map(item => item.text).reduce((acc: any[], item: any, index: number) => {
+	const chunkIndex = Math.floor(index / 2);
+	if (!acc[chunkIndex]) {
+		acc[chunkIndex] = []; // Start a new chunk
+	}
+	acc[chunkIndex].push(item);
+	return acc;
 }, []))
 
 // TODO: 根据chatSendDisable设置发送按钮 禁用与否
 const chatSendDisable = computed(() => styledChatStore.chatSendDisable)
-
 const clearQuote = () => { }
 const handleKeyDown = (event: { key: string; shiftKey: any; }) => {
 	if (event.key === 'Enter' && event.shiftKey) {
@@ -53,9 +54,11 @@ const handleKeyDown = (event: { key: string; shiftKey: any; }) => {
 	if (event.key === 'Enter') {
 		console.log('Enter')
 		handleSubmit()
+	}
 }
- }
 const handleSubmit = () => {
+	console.log('handleSubmit',scrollToBottom)
+	scrollToBottom()
 	if (prompt.value.trim() === '') {
 		return
 	}
@@ -157,69 +160,70 @@ const postChatPublicRepoStream = async (params: any, message: string, chatIdx: n
 					"writing_style": styledChatStore.currentChatStyle,
 					"historys": params.history
 				},
-			userStore.accessToken,
-			() => {
-			},
-			(data: { answer: string; source_documents: any; }) => {
-				if (!stopCtrl.value.get(chatIdx)) {
-					lastText = lastText + data.answer
-					const result = lastText
-					updateChat(
-						uuid.value,
-						chatIdx,
-						{
-							dateTime: new Date().toLocaleString(),
-							text: result,
-							inversion: false,
-							error: false,
-							loading: true,
-							conversationOptions: null,
-							requestOptions: { prompt: message, options: { ...options } },
-							type: 'source_documents',
-							sourceDocumentsTypeData: {
-								answer: data.answer,
-								source_documents: data.source_documents,
+				userStore.accessToken,
+				() => {
+				},
+				(data: { answer: string; source_documents: any; }) => {
+					if (!stopCtrl.value.get(chatIdx)) {
+						lastText = lastText + data.answer
+						const result = lastText
+						updateChat(
+							uuid.value,
+							chatIdx,
+							{
+								dateTime: new Date().toLocaleString(),
+								text: result,
+								inversion: false,
+								error: false,
+								loading: true,
+								conversationOptions: null,
+								requestOptions: { prompt: message, options: { ...options } },
+								type: 'source_documents',
+								sourceDocumentsTypeData: {
+									answer: data.answer,
+									source_documents: data.source_documents,
+								},
 							},
-						},
-					)
-					scrollToBottomIfAtBottom()
-				}
-			},
-			(error: string|(() => VNodeChild)) => {
-				messageFunction.error(error)
-				if (!stopCtrl.value.get(chatIdx)) {
-					loading.value = false
-					onRegenerateing.value = false
-					updateChatSome(uuid.value, chatIdx, { loading: false })
-					chatStore.setIsChatLoading(false)
-				}
-				else {
-					stopCtrl.value.delete(chatIdx)
-				}
-			},
-			() => {
-				queryContent.value = ''
-				if (!stopCtrl.value.get(chatIdx)) {
-					loading.value = false
-					onRegenerateing.value = false
-					updateChatSome(uuid.value, chatIdx, { loading: false })
-					chatStore.setIsChatLoading(false)
-				}
-				else {
-					stopCtrl.value.delete(chatIdx)
-				}
-			},
-		)
-	}).catch ((_err) => {
-	}).finally(() => {
-	})
-}
+						)
+						scrollToBottomIfAtBottom()
+					}
+				},
+				(error: string | (() => VNodeChild)) => {
+					messageFunction.error(error)
+					if (!stopCtrl.value.get(chatIdx)) {
+						loading.value = false
+						onRegenerateing.value = false
+						updateChatSome(uuid.value, chatIdx, { loading: false })
+						chatStore.setIsChatLoading(false)
+					}
+					else {
+						stopCtrl.value.delete(chatIdx)
+					}
+				},
+				() => {
+					queryContent.value = ''
+					if (!stopCtrl.value.get(chatIdx)) {
+						loading.value = false
+						onRegenerateing.value = false
+						updateChatSome(uuid.value, chatIdx, { loading: false })
+						chatStore.setIsChatLoading(false)
+					}
+					else {
+						stopCtrl.value.delete(chatIdx)
+					}
+				},
+			)
+		}).catch((_err) => {
+		}).finally(() => {
+		})
+	}
 	catch (error) {
-	chatStore.setIsChatLoading(false)
-}
+		chatStore.setIsChatLoading(false)
+	}
 }
 
 async function onConversation() {
+	console.log('onConversation')
 	chatStore.setIsChatLoading(true)
 	if (loading.value)
 		return
@@ -249,12 +253,7 @@ async function onConversation() {
 			requestOptions: { prompt: message, options: null },
 		},
 	)
-	// scrollToBottom()
-	nextTick(() => { // Ensure DOM updates before scrolling
-    if (footerRef.value) {
-      footerRef.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
+	scrollToBottom()
 
 	// 清理选中 query
 	clearSelectedQuery()
@@ -287,17 +286,7 @@ async function onConversation() {
 			requestOptions: { prompt: message, options: { ...options } },
 		},
 	)
-	// scrollToBottom()
-	// footerRef.value.scrollIntoView({
-    //   behavior: 'smooth', // Smooth scrolling animation
-    //   block: 'start' // Scroll to the top of the element (optional)
-    // }); 
-
-	nextTick(() => { // Ensure DOM updates before scrolling
-    if (footerRef.value) {
-      footerRef.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
+	scrollToBottom()
 
 	try {
 		const lastText = ''
@@ -310,13 +299,6 @@ async function onConversation() {
 						question: message,
 						history: history.value,
 						model: chatStore.selectedModel,
-						// knowledge_base_id: chatStore.knowledgeRepo.filter((ele: any) => ele.selected)[0].children.filter((ele: any) => ele.checked).map((ele: any) => {
-						// 	return {
-						// 		id: chatStore.knowledgeRepo.filter((ele: any) => ele.selected)[0].name,
-						// 		filter: 'time',
-						// 		timeRange: [ele.startDate, ele.endDate],
-						// 	}
-						// }),
 					}, message, dataSources.value.length - 1, options)
 					return
 				case 2:
@@ -356,6 +338,7 @@ async function onConversation() {
 							requestOptions: { prompt: message, options: { ...options } },
 						},
 					)
+					scrollToBottom()
 					scrollToBottomIfAtBottom()
 					loading.value = false
 					updateChatSome(uuid.value, dataSources.value.length - 1, { loading: false })
@@ -363,6 +346,8 @@ async function onConversation() {
 		}
 
 		await fetchChatAPIOnce()
+		scrollToBottom()
+		styledChatStore.setChatSendDisable(false)
 	}
 	catch (error: any) {
 		const errorMessage = error?.message ?? t('common.wrong')
@@ -410,162 +395,191 @@ async function onConversation() {
 		scrollToBottomIfAtBottom()
 	}
 	finally {
-		//
+		scrollToBottom()
+		styledChatStore.setChatSendDisable(false)
 	}
 }
 
 //@ts-ignore
-async function onRegenerate() {
-	if (loading.value)
-		return
-	if (onRegenerateing.value)
-		return
-	if (!accessToken.value) {
-		messageFunction.error(t('common.unauthorizedTips'))
-		return
-	}
-	controller = new AbortController()
+// async function onRegenerate() {
+// 	if (loading.value)
+// 		return
+// 	if (onRegenerateing.value)
+// 		return
+// 	if (!accessToken.value) {
+// 		messageFunction.error(t('common.unauthorizedTips'))
+// 		return
+// 	}
+// 	controller = new AbortController()
 
-	onRegenerateing.value = true
+// 	onRegenerateing.value = true
 
-	updateChatSome(uuid.value, dataSources.value.length - 1, { loading: true, text: '' })
+// 	updateChatSome(uuid.value, dataSources.value.length - 1, { loading: true, text: '' })
 
-	// history.value = []
-	if (usingContext.value) {
-		for (let i = 0; i < dataSources.value.length - 2; i = i + 2)
-			history.value.push([dataSources.value[i].text, dataSources.value[i + 1].text.split('\n\n数据来源：\n\n>')[0]])
-	}
-	else { history.value.length = 0 }
+// 	// history.value = []
+// 	if (usingContext.value) {
+// 		for (let i = 0; i < dataSources.value.length - 2; i = i + 2)
+// 			history.value.push([dataSources.value[i].text, dataSources.value[i + 1].text.split('\n\n数据来源：\n\n>')[0]])
+// 	}
+// 	else { history.value.length = 0 }
 
-	const { requestOptions } = dataSources.value[dataSources.value.length - 1]
+// 	const { requestOptions } = dataSources.value[dataSources.value.length - 1]
 
-	const message = requestOptions?.prompt ?? ''
+// 	const message = requestOptions?.prompt ?? ''
 
-	let options: Chat.ConversationRequest = {}
+// 	let options: Chat.ConversationRequest = {}
 
-	if (requestOptions.options)
-		options = { ...requestOptions.options }
+// 	if (requestOptions.options)
+// 		options = { ...requestOptions.options }
 
-	loading.value = true
+// 	loading.value = true
 
-	try {
-		const lastText = ''
-		let res, result
-		const fetchChatAPIOnce = async () => {
-			// send prompt to get response
-			switch (currentChatMode.value) {
-				case 1:
-					await postChatPublicRepoStream({
-						question: message,
-						history: history.value,
-						model: 'claude 2',
-						knowledge_base_id: chatStore.knowledgeRepo.filter((ele: any) => ele.selected)[0].children.filter((ele: any) => ele.checked).map((ele: any) => {
-							return {
-								id: chatStore.knowledgeRepo.filter((ele: any) => ele.selected)[0].name,
-								filter: 'time',
-								timeRange: [ele.startDate, ele.endDate],
-							}
-						}),
-					}, message, dataSources.value.length - 1, options)
-					return
-				case 2:
-					// eslint-disable-next-line no-case-declarations
-					const kbs = chatStore.myFileList.filter((ele: any) => ele.selected).map(ele => ({
-						id: ele.kb_name,
-						type: 1,
-						fileName: ele.children.filter((ele: { isSelected: any }) => ele.isSelected).map((ele: any) => ele.name),
-					}))
-					if (kbs[0].fileName.length === 0)
-						messageFunction.error('请选择至少一个文件或先上传文件')
-					await postChatMyKbStream({
-						kbs,
-						question: message,
-						history: history.value,
-						model: 'claude 2',
-					}, message, dataSources.value.length - 1, options)
-					return
-				default:
-					res = await chat({
-						question: message,
-						history: history.value,
-					})
-					result = res.data.source_documents?.length > 0 ? `${res.data.response}\n\n数据来源：\n\n>${res.data.source_documents.join('>')}` : res.data.response
-					updateChat(
-						uuid.value,
-						dataSources.value.length - 1,
-						{
-							dateTime: new Date().toLocaleString(),
-							text: lastText + (result ?? ''),
-							inversion: false,
-							error: false,
-							loading: false,
-							conversationOptions: null,
-							requestOptions: { prompt: message, options: { ...options } },
-						},
-					)
-					scrollToBottomIfAtBottom()
-					loading.value = false
-					onRegenerateing.value = false
-					updateChatSome(uuid.value, dataSources.value.length - 1, { loading: false })
-			}
-		}
-		await fetchChatAPIOnce()
-	}
-	catch (error: any) {
-		if (error.message === 'canceled') {
-			updateChatSome(
-				uuid.value,
-				dataSources.value.length - 1,
-				{
-					loading: false,
-				},
-			)
-			return
-		}
-		const errorMessage = error?.message ?? t('common.wrong')
-		updateChat(
-			uuid.value,
-			dataSources.value.length - 1,
-			{
-				dateTime: new Date().toLocaleString(),
-				text: errorMessage,
-				inversion: false,
-				error: true,
-				loading: false,
-				conversationOptions: null,
-				requestOptions: { prompt: message, options: { ...options } },
-			},
-		)
-	}
-	finally {
-		loading.value = false
-	}
-}
+// 	try {
+// 		const lastText = ''
+// 		let res, result
+// 		const fetchChatAPIOnce = async () => {
+// 			// send prompt to get response
+// 			switch (currentChatMode.value) {
+// 				case 1:
+// 					await postChatPublicRepoStream({
+// 						question: message,
+// 						history: history.value,
+// 						model: 'claude 2',
+// 						knowledge_base_id: chatStore.knowledgeRepo.filter((ele: any) => ele.selected)[0].children.filter((ele: any) => ele.checked).map((ele: any) => {
+// 							return {
+// 								id: chatStore.knowledgeRepo.filter((ele: any) => ele.selected)[0].name,
+// 								filter: 'time',
+// 								timeRange: [ele.startDate, ele.endDate],
+// 							}
+// 						}),
+// 					}, message, dataSources.value.length - 1, options)
+// 					return
+// 				case 2:
+// 					// eslint-disable-next-line no-case-declarations
+// 					const kbs = chatStore.myFileList.filter((ele: any) => ele.selected).map(ele => ({
+// 						id: ele.kb_name,
+// 						type: 1,
+// 						fileName: ele.children.filter((ele: { isSelected: any }) => ele.isSelected).map((ele: any) => ele.name),
+// 					}))
+// 					if (kbs[0].fileName.length === 0)
+// 						messageFunction.error('请选择至少一个文件或先上传文件')
+// 					await postChatMyKbStream({
+// 						kbs,
+// 						question: message,
+// 						history: history.value,
+// 						model: 'claude 2',
+// 					}, message, dataSources.value.length - 1, options)
+// 					return
+// 				default:
+// 					res = await chat({
+// 						question: message,
+// 						history: history.value,
+// 					})
+// 					result = res.data.source_documents?.length > 0 ? `${res.data.response}\n\n数据来源：\n\n>${res.data.source_documents.join('>')}` : res.data.response
+// 					updateChat(
+// 						uuid.value,
+// 						dataSources.value.length - 1,
+// 						{
+// 							dateTime: new Date().toLocaleString(),
+// 							text: lastText + (result ?? ''),
+// 							inversion: false,
+// 							error: false,
+// 							loading: false,
+// 							conversationOptions: null,
+// 							requestOptions: { prompt: message, options: { ...options } },
+// 						},
+// 					)
+// 					scrollToBottomIfAtBottom()
+// 					styledChatStore.setChatSendDisable(false)
+// 					loading.value = false
+// 					onRegenerateing.value = false
+// 					updateChatSome(uuid.value, dataSources.value.length - 1, { loading: false })
+// 			}
+// 		}
+// 		await fetchChatAPIOnce()
+// 	}
+// 	catch (error: any) {
+// 		if (error.message === 'canceled') {
+// 			updateChatSome(
+// 				uuid.value,
+// 				dataSources.value.length - 1,
+// 				{
+// 					loading: false,
+// 				},
+// 			)
+// 			return
+// 		}
+// 		const errorMessage = error?.message ?? t('common.wrong')
+// 		updateChat(
+// 			uuid.value,
+// 			dataSources.value.length - 1,
+// 			{
+// 				dateTime: new Date().toLocaleString(),
+// 				text: errorMessage,
+// 				inversion: false,
+// 				error: true,
+// 				loading: false,
+// 				conversationOptions: null,
+// 				requestOptions: { prompt: message, options: { ...options } },
+// 			},
+// 		)
+// 	}
+// 	finally {
+// 		loading.value = false
+// 	}
+// }
 
 onMounted(() => {
 	if (!getChatByUuidAndIndex(uuid.value, 0)) {
 		updateWholeChatByUuid(uuid.value, [])
 	}
-	//@ts-ignore
-	footerRef?.value?.scrollIntoView({
-      behavior: 'smooth', // Smooth scrolling animation
-      block: 'start' // Scroll to the top of the element (optional)
-    }); 
-  
+	styledChatStore.setChatSendDisable(false)
+	switch (uuid.value) {
+		case 'selectStyle':
+			styledChatStore.setCurrentChatStyle('selectStyle')
+			break
+		case 'memberPromotion':
+			styledChatStore.setCurrentChatStyle('memberPromotion')
+			break
+		case 'marketingWriting':
+			styledChatStore.setCurrentChatStyle('marketingWriting')
+			break
+		default:
+			break
+	}
+
 })
+watch(latestEvent, (newEvent) => {
+	if (newEvent && newEvent.type === 'addChat') {
+		console.log('newEvent', newEvent.data)
+		switch (newEvent.data.type) {
+			case 'styledChat':
+				prompt.value = newEvent.data.prompt
+				handleSubmit()
+				break
+			case 'memberPromotion':
+				prompt.value = newEvent.data.inputText
+				handleSubmit()
+				break
+			case 'marketingWriting':
+				prompt.value = newEvent.data.inputText
+				handleSubmit()
+			default:
+				break
+		}
+	}
+});
 </script>
 <template>
-	<div  class="flex flex-col w-full h-full bg-grey " style="position: relative;background: rgba(245, 247, 253, 1); padding-left:266px;padding-right:266px;">
+	<div class="flex flex-col w-full h-full bg-grey "
+		style="position: relative;background: rgba(245, 247, 253, 1); padding-left:266px;padding-right:266px;">
 		<main class="overflow-hidden" style="height: calc(100% - footerRef.value?.clientHeight);flex:9">
-			<div class="h-full overflow-hidden overflow-y-auto" 			id="scrollRef" ref="scrollRef"
-			>
-				<div id="image-wrapper" class="w-full h-full max-w-screen-xl m-auto dark:bg-[#101014]"
-				style="background: rgba(245, 247, 253, 1);"
-				>
-
-					<div>
-						<Message v-for="(item, index) of dataSources" :key="index" :date-time="item.dateTime" :text="item.text"
-							:inversion="item.inversion" :error="item.error" :loading="item.loading"
+			<div class="h-full overflow-hidden overflow-y-auto" >
+				<div id="image-wrapper " class="w-full h-full max-w-screen-xl m-auto dark:bg-[#101014]"  
+					style="background: rgba(245, 247, 253, 1);overflow:scroll" ref="scrollRef">
+					<div >
+						<Message v-for="(item, index) of dataSources" :key="index" :date-time="item.dateTime" 
+							:text="item.text" :inversion="item.inversion" :error="item.error" :loading="item.loading"
 							:regenerate="index === (dataSources.length - 1) && !onRegenerateing" :type="item.type"
 							:should-not-have-regenerate-icon="item.shouldNotHaveRegenerateIcon"
 							:selected-content="item.selectedContent" :abstract-data="item.abstractData"
@@ -577,29 +591,30 @@ onMounted(() => {
 		<footer ref="footerRef" class="pt-3 pb-1" style="height: fit-content;margin-left: 20px;margin-right: 20px;">
 			<div class="w-full max-w-screen-xl m-auto flex align-center" style="height: fit-content; min-height: 50px;">
 				<div class="w-full flex" style="position: relative; height: fit-content;min-height: 50px;">
-					<div style="background-color: rgba(255, 255, 255, 1); width: 50px; height:50px;display:flex; justify-content:center;align-items:center; border-radius:2px;margin-right:10px;">
-						<img class="speech-button"               :src = 'new_conversation'
-						style="width: 30px; height:30px;opacity: 1; " @click="createNewConvesation">
+					<div
+						style="background-color: rgba(255, 255, 255, 1); width: 50px; height:50px;display:flex; justify-content:center;align-items:center; border-radius:2px;margin-right:10px;">
+						<img class="speech-button" :src='new_conversation' style="width: 30px; height:30px;opacity: 1; "
+							@click="createNewConvesation">
 					</div>
-					<NInput ref="inputRef" v-model:value="prompt" class="flex items-center justify-center"
-						style="padding-right: 50px; height: 100%;min-height: 50px;
+					<NInput ref="inputRef" v-model:value="prompt" class="flex items-center justify-center" style="padding-right: 50px; height: 100%;min-height: 50px;
 						background-color: white !important;
-						border-radius: 10px 10px 10px 10px"
-						type="textarea" :placeholder="placeholder" :autosize="{ minRows: 1, maxRows: isMobile ? 4 : 8 }"
-						@keyup.enter="handleKeyDown" />
-					<div>
-						<img class="submit-button" src="@/assets/icon_发送@2x.png" style="opacity: 1" @click="handleSubmit">
-					</div>
+						border-radius: 10px 10px 10px 10px" type="textarea" :placeholder="placeholder"
+						:autosize="{ minRows: 1, maxRows: isMobile ? 4 : 8 }" @keyup.enter="handleKeyDown" />
+					<NButton>
+						<!-- :disabled="chatSendDisable" -->
+						<img class="submit-button" src="@/assets/icon_发送@2x.png"
+							:class="{ 'disabled': chatSendDisable }" @click="handleSubmit">
+					</NButton>
 				</div>
 			</div>
 		</footer>
 	</div>
 </template>
 <style scoped lang="less">
-
-.n-input__placeholder{
-	color:red !important;
+.n-input__placeholder {
+	color: red !important;
 }
+
 #app {
 	background-image: url(../../assets/bg.jpg);
 	background-size: 100% 100%;
@@ -641,9 +656,7 @@ onMounted(() => {
 	color: rgba(255, 255, 255, 0.7);
 }
 
-.speech-button {
-	
-}
+.speech-button {}
 
 .submit-button {
 	position: absolute;
@@ -676,5 +689,14 @@ onMounted(() => {
 		border-radius: 4px;
 		margin-right: 8px;
 	}
+}
+
+.submit-button {
+    opacity: 1; /* Default opacity */
+    transition: opacity 0.3s ease; /* Optional smooth transition */
+}
+
+.submit-button.disabled {
+    opacity: 0.5;
 }
 </style>

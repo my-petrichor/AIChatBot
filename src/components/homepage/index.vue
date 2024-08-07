@@ -10,9 +10,10 @@ const Login = defineAsyncComponent(() => import('@/components/common/HomepageLog
 const userStore = useUserStore()
 
 const onClick = (name) => {
-	router.push({
-		name: name,
-	})
+	
+	router.push('chat/' + name)
+	
+
 }
 
 const clickButton = () => {
@@ -62,7 +63,7 @@ const clickButton = () => {
 					<div class="rectangle">
 						<img src="@/assets/矩形 42455.png">
 					</div>
-					<div v-if="isLogin" class="middleContentiImage" @click="onClick('styleChange')">
+					<div v-if="isLogin" class="middleContentiImage" @click="onClick('selectStyle')">
 						<div class="middleContentImageLogin"><img src="@/assets/AI风格改写.png" alt="AI风格改写"></div>
 						<div class='middleContentImageTextLogin'>AI风格改写</div>
 					</div>
@@ -89,7 +90,7 @@ const clickButton = () => {
 					<div class='middleContentiImageLeft'>
 						<img src="@/assets/AI顾客营销.png" alt="AI顾客营销">
 					</div>
-					<div v-if="isLogin" class="middleContentiImage" @click="onClick('memeberPromotionCopywriting')">
+					<div v-if="isLogin" class="middleContentiImage" @click="onClick('memberPromotion')">
 						<div class="middleContentImageLogin"><img src="@/assets/会员促活话术智能生成.png" alt="会员促活文案"></div>
 						<div class="middleContentImageTextLogin">会员促活文案</div>
 					</div>
