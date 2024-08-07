@@ -5,7 +5,7 @@ import { NSplit, NH1, NH2, NButton } from 'naive-ui'
 import { useStyledChatStore } from '@/store/modules/styledChat'
 import { useRoute } from 'vue-router'
 import { useChat } from '@/components/views/chat/hooks/useChat'
-
+import MemberPromotion from '@/components/styleChat/leftPanel/components/memberPromotion/index.vue'
 import { getWritingStyleList } from '@/api/chat'
 
 const { setCurrentChatStyle } = useStyledChatStore()
@@ -42,9 +42,6 @@ onMounted(() => {
 
 <template>
 	<div>
-		<NH1>
-			选择风格
-		</NH1>
 		<div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
 			<NButton style="margin-bottom: 10px;
 	width: 80%;

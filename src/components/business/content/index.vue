@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, onMounted, ref } from 'vue'
+import { onBeforeMount, onMounted, ref, computed } from 'vue'
 import {
   NSplit,
 } from 'naive-ui'
@@ -8,12 +8,19 @@ import {
 
 
 import Chat from '@/components/styleChat/styledChat/index.vue'
-
-import { useChatStore } from '@/store'
+import LeftPanel from '@/components/styleChat/leftPanel/index.vue'
+import MemberPromotion from '@/components/styleChat/leftPanel/components/memberPromotion/index.vue'
+import MarketingWriting from '@/components/styleChat/leftPanel/components/marketingWriting/index.vue'
+import SelectStyle from '@/components/styleChat/leftPanel/components/selectStyle/index.vue'
+import { useChatStore, useStyledChatStore } from '@/store'
+import { useRoute } from 'vue-router'
 const leftSide = ref(null)
 const content = ref(null)
 const chatStore = useChatStore()
 const defaultModel = 'ChatGLM-6b'
+const route = useRoute()
+const uuid = ref<any>(route.params.uuid)
+const leftPanelType = uuid
 onBeforeMount(() => {
   chatStore.setChatMode(1)
 })
@@ -23,27 +30,25 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div ref="content" class="content">
-    <NSplit
-    direction="horizontal"
-    style="height: calc(100% )"
-    :default-size="0.2"
-    :resize-trigger-size="16"
-    :min="0.2"
-    :max="0.5"
-  >
-    <template #1 >
-      <div ref="leftSide" class="leftSide"  style="overflow-y: scroll;overflow-x:scroll">
-      </div>
-    </template>
-    <template #2>
-      <div class="middleContent">
-      <Chat id="chat" ref="chatRef" class="chat" />
-    </div>
-    </template>
-    <template #resize-trigger >
-    </template>
-  </NSplit>
+  <div ref="content" class="content" style="display: flex;
+  flex-direction: column;">
+    <NSplit direction="horizontal" :default-size="0.2" :resize-trigger-size="16" :min="0.2" :max="0.5" style="flex: 1;">
+      <template #1>
+        <div ref="leftSide" class="leftSide" style=" overflow-y: scroll;overflow-x:scroll;height:100%">
+          <MemberPromotion v-if="leftPanelType === 'memberPromotion'" />
+          <MarketingWriting v-else-if="leftPanelType === 'marketingWriting'" />
+          <SelectStyle v-else-if="leftPanelType === 'selectStyle'" />
+          <SelectStyle v-else />
+        </div>
+      </template>
+      <template #2>
+        <div class="middleContent" style="100%">
+          <Chat id="chat" ref="chatRef" class="chat" />
+        </div>
+      </template>
+      <template #resize-trigger>
+      </template>
+    </NSplit>
   </div>
 </template>
 
@@ -78,7 +83,7 @@ a.custom-link {
   display: grid;
   color: white;
   overflow: scroll;
-  background-color:rgba(255, 255, 255, 1);
+  background-color: rgba(255, 255, 255, 1);
   border-top: 1px solid rgba(220, 224, 228, 1);
   scrollbar-width: none;
   /* Firefox */
@@ -133,10 +138,11 @@ a.custom-link {
   }
 
   .leftSide {
-   background-color: rgba(255, 255, 255, 1);
+    background-color: rgba(255, 255, 255, 1);
     margin: 4px 0px 4px 4px;
     padding: 20px;
-    height:100%;
+    height: 100%;
+
     // box-shadow: 0px 3px 14px 1px rgba(9,9,87,0.16);
     .selectedKnowledge {
       width: 266px;
@@ -186,7 +192,7 @@ a.custom-link {
     margin: 0px 4px 4px 0px;
     height: calc(100% - 8px);
     overflow: hidden;
-    box-shadow: -20px 0px 14px 1px rgba(9,9,87,0.16);
+    box-shadow: -20px 0px 14px 1px rgba(9, 9, 87, 0.16);
     margin-left: 1px;
   }
 

@@ -15,7 +15,11 @@ export const useStyledChatStore = defineStore("styledChat-store", {
 			this.theme = theme;
 			this.recordState();
 		},
-
+		triggerEvent(eventData) {
+			console.log('triggerEvent', eventData);
+			this.latestEvent = eventData;
+			this.recordState();
+		  },
 		setLanguage(language: string) {
 			if (this.language !== language) {
 				this.language = language;
@@ -30,8 +34,20 @@ export const useStyledChatStore = defineStore("styledChat-store", {
 			this.currentChatStyle = currentChatStyle;
 			this.recordState();
 		},
+		setChatSendDisable(chatSendDisable: boolean) {
+			this.chatSendDisable = chatSendDisable;
+			this.recordState();
+		},
 		recordState() {
 			setLocalSetting(this.$state);
 		},
+		setChatSendDisable(chatSendDisable: boolean) {
+			this.chatSendDisable = chatSendDisable;
+			this.recordState();
+		},
+		setLeftPanelType(leftPanelType: string) {
+			this.leftPanelType = leftPanelType;
+			this.recordState();
+		}
 	},
 });
