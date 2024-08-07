@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {ref, onMounted, reactive} from 'vue'
+import { ref, onMounted, reactive } from 'vue'
 import {
     NButton, NDatePicker, NDropdown, NForm, NFormItem, NIcon, NInput, NModal, NRadio, NSelect, NSpace,
     NUpload, NUploadDragger, useMessage
 } from 'naive-ui'
-import {useRouter} from "vue-router"
+import { useRouter } from "vue-router"
 import { ArrowBackIosFilled } from '@vicons/material'
-import {useStyledChatStore} from "@/store"
+import { useStyledChatStore } from '@/store/modules/styledChat'
 
 const router = useRouter()
 const presetForm = ref({
@@ -30,12 +30,14 @@ const handleSubmit = () => {
         message.error('请填写完整的会员信息')
         return
     }
+    styledChatStore.triggerEvent({ type: 'addChat', data: { ...presetForm.value, type: 'memberPromotion' } });
     message.success('电子文案生成成功')
+
     setChatSendDisable(false)
 }
 
-const getCharacterSettingList = () => {}
-const getShoppingTypeList = () => {}
+const getCharacterSettingList = () => { }
+const getShoppingTypeList = () => { }
 
 function goHome() {
     router.push('/')
@@ -71,10 +73,12 @@ onMounted(async () => {
         </div>
         <NForm label-placement="top">
             <NFormItem label="品牌人设" label-width="auto" :label-style="labelStyle">
-                <NSelect v-model:value="presetForm.characterSetting" class="mb-2" :options="characterSettingList" placeholder="请选择" />
+                <NSelect v-model:value="presetForm.characterSetting" class="mb-2" :options="characterSettingList"
+                    placeholder="请选择" />
             </NFormItem>
             <NFormItem label="店铺类型" label-width="auto" :label-style="labelStyle">
-                <NSelect v-model:value="presetForm.shoppingType" class="mb-2" :options="shoppingTypeList" placeholder="请选择" />
+                <NSelect v-model:value="presetForm.shoppingType" class="mb-2" :options="shoppingTypeList"
+                    placeholder="请选择" />
             </NFormItem>
             <NFormItem label="节日" label-width="auto" :label-style="labelStyle">
                 <NInput v-model:value="presetForm.festival" placeholder="请输入" />
@@ -92,6 +96,4 @@ onMounted(async () => {
     </div>
 </template>
 
-<style scoped lang="less">
-
-</style>
+<style scoped lang="less"></style>

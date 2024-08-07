@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {ref, onMounted, reactive} from 'vue'
 import {
-    NButton, NDatePicker, NDropdown, NForm, NFormItem, NIcon, NInput, NModal, NRadio, NSelect, NSpace,
-    NUpload, NUploadDragger, useMessage
+    NButton, NForm, NFormItem, NIcon, NInput, NSelect, 
+    useMessage
 } from 'naive-ui'
 import {useRouter} from "vue-router"
 import { ArrowBackIosFilled } from '@vicons/material'
-import { useStyledChatStore } from '@/store'
-
+import { useStyledChatStore } from '@/store/modules/styledChat'
+const styledChatStore = useStyledChatStore();
 const router = useRouter()
 const presetForm1 = ref({
     characterSetting: '',
@@ -34,6 +34,7 @@ const handleSubmit = () => {
         message.error('请填写完整的会员信息')
         return
     }
+    styledChatStore.triggerEvent({ type: 'addChat', data: { ...presetForm1.value, type: 'memberPromotion' } });
     message.success('电子文案生成成功')
     setChatSendDisable(false)
 }
