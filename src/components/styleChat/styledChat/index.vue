@@ -65,9 +65,9 @@ const handleSubmit = () => {
 	if (prompt.value.trim() === '') {
 		return
 	}
-	// if (loading.value) {
-	// 	return
-	// }
+	if (loading.value) {
+		return
+	}
 	// styledChatStore.setChatSendDisable(true)
 	switch (currentChatMode.value) {
 		case 'selectStyle':
@@ -95,12 +95,13 @@ const handleSubmit = () => {
 const createNewConvesation = () => {
 	console.log("createNewConvesation")
 	updateWholeChatByUuid(uuid.value, [])
+	styledChatStore.setChatSendDisable(false)
+	loading.value = false
 	prompt.value = ''
 }
 
 function clearSelectedQuery() {
 	chatStore.setSelectedQuery('')
-
 }
 
 const styleChatStream = async (chatIdx) => {
@@ -156,6 +157,7 @@ const styleChatStream = async (chatIdx) => {
 			() => {
 				console.log("close")
 				queryContent.value = ''
+				styledChatStore.setChatSendDisable(false)
 				if (!stopCtrl.value.get(chatIdx)) {
 					loading.value = false
 					onRegenerateing.value = false
@@ -389,7 +391,7 @@ watch(latestEvent, (newEvent) => {
 					<NButton>
 						<!-- :disabled="chatSendDisable" -->
 						<img class="submit-button" src="@/assets/icon_发送@2x.png"
-							:class="{ 'disabled': chatSendDisable }" @click="handleSubmit">
+							:class="{ 'disabled': chatSendDisable || loading }" @click="handleSubmit">
 					</NButton>
 				</div>
 			</div>
