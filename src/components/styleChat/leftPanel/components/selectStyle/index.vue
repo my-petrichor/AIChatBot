@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, onMounted, ref, reactive } from 'vue'
+import { onMounted, ref, reactive, watch } from 'vue'
 import {
-    NButton, NDatePicker, NDropdown, NForm, NFormItem, NIcon, NInput, NModal, NRadio, NSelect, NSpace,
-    NUpload, NUploadDragger, useMessage
+    NButton, NForm, NFormItem, NIcon, NInput, NModal, NRadio, NSelect, useMessage
 } from 'naive-ui'
-import {useRouter} from "vue-router"
+import { useRouter } from "vue-router"
 import { ArrowBackIosFilled } from '@vicons/material'
 import { useStyledChatStore } from '@/store/modules/styledChat'
+import { getWritingStyleList2 } from '@/api/chat'
 
 const styledChatStore = useStyledChatStore();
 const router = useRouter()
 const presetForm = ref({
-    textStyle: 'test',
+    textStyle: '',
     inputText: '',
 })
 const textStyleList = ref<any>([])
@@ -28,26 +28,34 @@ const handleSubmit = () => {
         return
     }
     // set chatSendDisable
-    styledChatStore.setChatSendDisable(true)
-    styledChatStore.triggerEvent({ type: 'addChat', data: {...presetForm.value,type:'styledChat',prompt: `根据风格${presetForm.value.textStyle}改写以下文案${presetForm.value.inputText}`} });
-    message.success('电子文案生成成功')
+    // styledChatStore.setChatSendDisable(true)
+    styledChatStore.triggerEvent({ type: 'addChat', data: { ...presetForm.value, type: 'selectStyle', prompt: `根据风格${presetForm.value.textStyle}改写以下文案${presetForm.value.inputText}` } });
+
 }
 
-const getTextStyleList = () => {}
+
 
 function goHome() {
     router.push('/')
 }
 
 onMounted(async () => {
-    // const res = await getTextStyleList({})
-    // res?.data?.data?.forEach((item: any) => {
-    //     textStyleList.value.push({
-    //         value: item.value,
-    //         label: item.label,
-    //         })
-    // })
+    await getWritingStyleList2().then((res2: { data: { data: any[] } }) => {
+        textStyleList.value = res2.data.data.map((item: any) => {
+            return {
+                label: item,
+                value: item,
+            }
+        })
+        presetForm.value.textStyle = textStyleList.value[0].value
+    })
 })
+
+watch(presetForm, (newVal, oldVal) => {
+    console.log(newVal, oldVal)
+    styledChatStore.setStyleInStyledChat(newVal.textStyle)
+}, { deep: true })
+
 </script>
 
 <template>
@@ -56,7 +64,7 @@ onMounted(async () => {
             <div style="background-color: rgba(255, 255, 255, 1); display:flex;
             justify-content:center;align-items:center; border-radius:2px; margin-bottom:0;
             color: #0d1117; font-size: 1.3em;">
-                <NButton :bordered="false" quaternary strong color="#0d1117"  @click="goHome">
+                <NButton :bordered="false" quaternary strong color="#0d1117" @click="goHome">
                     <template #icon>
                         <n-icon>
                             <ArrowBackIosFilled />
@@ -71,13 +79,12 @@ onMounted(async () => {
                 <NSelect v-model:value="presetForm.textStyle" class="mb-2" :options="textStyleList" placeholder="请选择" />
             </NFormItem>
             <NFormItem label="输入需要改写的文本" label-width="auto" :label-style="labelStyle">
-                <NInput v-model:value="presetForm.inputText" type="textarea" :autosize="{ minRows: 20, }" placeholder="请输入" />
+                <NInput v-model:value="presetForm.inputText" type="textarea" :autosize="{ minRows: 20, }"
+                    placeholder="请输入" />
             </NFormItem>
             <NButton type="info" size="large" @click="handleSubmit">确认</NButton>
         </NForm>
     </div>
 </template>
 
-<style scoped lang="less">
-
-</style>
+<style scoped lang="less"></style>

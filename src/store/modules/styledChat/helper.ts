@@ -14,6 +14,8 @@ export interface StyleChatState {
 	currentChatStyle: string
 	chatSendDisable: boolean
 	leftPanelType: string
+	latestEvent: any
+	styleInStyledChat: string
 }
 
 export function defaultSetting(): StyleChatState {
@@ -21,6 +23,7 @@ export function defaultSetting(): StyleChatState {
 
 		currentChatStyle: 'default', chatSendDisable: false, leftPanelType: 'MarketingWritinglarge',
 		 latestEvent: null,
+		styleInStyledChat: ''
 	}
 }
 

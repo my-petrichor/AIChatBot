@@ -50,6 +50,15 @@ export const getWritingStyleList = () => {
   })
 }
 
+// api/v1/style_rewriting/list_styles
+
+export const getWritingStyleList2 = () => {
+  return api2({
+    url: '/api/v1/style_rewriting/list_styles',
+    method: 'get',
+  })
+}
+
 export const bing_search = (params: any) => {
   return api({
     url: '/local_doc_qa/bing_search_chat',
@@ -290,7 +299,9 @@ export const styleConverstionStream = (params: any, auth: any, onStart: () => an
   return fetchStream2(
     'post',
 		// /api/v1/marketing/writing/style_conversion_stream
-    'api2/api/v1/marketing/writing/style_conversion_stream',
+    // 'api2/api/v1/marketing/writing/style_conversion_stream',
+    // /api/v1/style_rewriting/generate_query_stream
+    'api2/api/v1/style_rewriting/generate_query_stream',
 		// '/api/local_doc_qa/local_doc_chat_stream_test',
     auth,
     params,

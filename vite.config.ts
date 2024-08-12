@@ -38,19 +38,33 @@ export default defineConfig((env) => {
       port: 1002,
       open: false,
       proxy: {
-        '/api': {
-          // 7861 below is for dev testing
-          // target: 'http://127.0.0.1:7861',
-          // below is for prod
-          target: 'http://120.48.109.89:7861',
-          changeOrigin: true, // 允许跨域
-          rewrite: path => path.replace('/api/', ''),
-        },
+        // '/api': {
+        //   // 7861 below is for dev testing
+        //   // target: 'http://127.0.0.1:7861',
+        //   // below is for prod
+        //   target: 'http://120.48.109.89:7861',
+        //   changeOrigin: true, // 允许跨域
+        //   rewrite: path => path.replace('/api/', ''),
+        // },
+        // '/api2': {
+				// 	target: 'http://120.48.158.17:1006',
+        //   changeOrigin: true, // 允许跨域
+				// 	rewrite: (path) => {
+				// 		return path.replace(/^\/api2/, '');
+				// 	}
+        // },
         '/api2': {
-					target: 'http://120.48.158.17:1004',
+					target: 'http://120.48.158.17:1006',
           changeOrigin: true, // 允许跨域
 					rewrite: (path) => {
 						return path.replace(/^\/api2/, '');
+					}
+        },
+        '/api': {
+          target: 'http://120.48.109.89:7861',
+          changeOrigin: true, // 允许跨域
+					rewrite: (path) => {
+						return path.replace(/^\/api/, '');
 					}
         },
         '/static1': {

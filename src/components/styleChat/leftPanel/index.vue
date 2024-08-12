@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { NSplit, NH1, NH2, NButton } from 'naive-ui'
 //useStyleStore
-import { useStyledChatStore } from '@/store/modules/styledChat'
+import { useStyledChatStore } from '@/store/modules/selectStyle'
 import { useRoute } from 'vue-router'
 import { useChat } from '@/components/views/chat/hooks/useChat'
 import MemberPromotion from '@/components/styleChat/leftPanel/components/memberPromotion/index.vue'

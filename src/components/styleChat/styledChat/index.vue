@@ -23,9 +23,10 @@ const uuid = ref<any>(route.params.uuid)
 const dataSources = computed(() => chatStore.getChatByUuid(uuid.value) ?? [])
 const isMobile = ref(false)
 const loading = ref(false)
-const currentChatMode = ref(1)
+const currentChatMode = ref('')
+// const currentChatMode = computed(() => styledChatStore.currentChatStyle)
 const stopCtrl = ref<any>()
-const footerRef = ref(null); 
+const footerRef = ref(null);
 const placeholder = ref('你可以这样输入:帮我改写下面这段话:文字…')
 const prompt = ref<string>('')
 const quoteStr = ref<string>('')
@@ -34,7 +35,7 @@ const onRegenerateing = ref(false)
 let controller = new AbortController()
 const conversationList = computed(() => dataSources.value.filter(item => (!item.inversion && !!item.conversationOptions)))
 const accessToken = computed(() => userStore.accessToken)
-const history = computed(() => dataSources.value.map(item => item.text).reduce((acc: any[], item: any, index: number) => {
+const history = computed(() => dataSources.value.map((item: { text: string; }) => item.text).reduce((acc: any[], item: any, index: number) => {
 	const chunkIndex = Math.floor(index / 2);
 	if (!acc[chunkIndex]) {
 		acc[chunkIndex] = []; // Start a new chunk
@@ -43,9 +44,10 @@ const history = computed(() => dataSources.value.map(item => item.text).reduce((
 	return acc;
 }, []))
 
+let streamParams = {}
+
 // TODO: 根据chatSendDisable设置发送按钮 禁用与否
 const chatSendDisable = computed(() => styledChatStore.chatSendDisable)
-const clearQuote = () => { }
 const handleKeyDown = (event: { key: string; shiftKey: any; }) => {
 	if (event.key === 'Enter' && event.shiftKey) {
 		console.log('Shift + Enter')
@@ -57,15 +59,37 @@ const handleKeyDown = (event: { key: string; shiftKey: any; }) => {
 	}
 }
 const handleSubmit = () => {
-	console.log('handleSubmit',scrollToBottom)
+	console.log('handleSubmit')
 	scrollToBottom()
+	// currentChatMode.value = 'chat'
 	if (prompt.value.trim() === '') {
 		return
 	}
-	if (loading.value) {
-		return
+	// if (loading.value) {
+	// 	return
+	// }
+	// styledChatStore.setChatSendDisable(true)
+	switch (currentChatMode.value) {
+		case 'selectStyle':
+		streamParams = {
+			textStyle: styledChatStore.styleInStyledChat,
+			inputText: prompt.value,
+		}
+
+			onConversation()
+			break
+		case 'memberPromotion':
+			onConversation()
+			break
+		case 'marketingWriting':
+			onConversation()
+			break
+		case 'chat':
+			onConversation()
+			break
+		default:
+			break
 	}
-	onConversation()
 	prompt.value = ''
 }
 const createNewConvesation = () => {
@@ -78,161 +102,88 @@ function clearSelectedQuery() {
 	chatStore.setSelectedQuery('')
 
 }
-const postChatMyKbStream = async (params: any, message: string, chatIdx: number, options?: Chat.ConversationRequest) => {
-	// 清理引用 quote
-	clearQuote()
-	loading.value = true
 
-	let lastText = ''
-	try {
-		// await getting query result
-		await PostQueryMerge(params.question, userStore.accessToken).then((res) => {
-			queryContent.value = res.data.data
-			chatMyKbStream(
-				{ ...params, question: queryContent.value },
-				userStore.accessToken,
-				() => {
-				},
-				(data) => {
-					if (!stopCtrl.value.get(chatIdx)) {
-						lastText = lastText + data.answer
-						updateChat(
-							uuid.value,
-							chatIdx,
-							{
-								dateTime: new Date().toLocaleString(),
-								text: lastText,
-								inversion: false,
-								error: false,
-								loading: false,
-								conversationOptions: null,
-								requestOptions: { prompt: message, options: { ...options } },
-							},
-						)
-						scrollToBottomIfAtBottom()
-					}
-				},
-				(error) => {
-					messageFunction.error(error)
-					if (!stopCtrl.value.get(chatIdx)) {
-						loading.value = false
-						onRegenerateing.value = false
-						updateChatSome(uuid.value, chatIdx, { loading: false })
-						chatStore.setIsChatLoading(false)
-					}
-					else {
-						stopCtrl.value.delete(chatIdx)
-					}
-				},
-				() => {
-					queryContent.value = ''
-					if (!stopCtrl.value.get(chatIdx)) {
-						loading.value = false
-						onRegenerateing.value = false
-						updateChatSome(uuid.value, chatIdx, { loading: false })
-						chatStore.setIsChatLoading(false)
-					}
-					else {
-						stopCtrl.value.delete(chatIdx)
-					}
-				},
-			)
-		}).catch((_err) => {
-		}).finally(() => {
-		})
-	}
-	catch (error) {
-	}
-}
-
-const postChatPublicRepoStream = async (params: any, message: string, chatIdx: number, options?: Chat.ConversationRequest) => {
+const styleChatStream = async (chatIdx) => {
 	loading.value = true
 	let lastText = ''
 	try {
-		// await getting query result
-		await PostQueryMerge(params.question, userStore.accessToken).then((res) => {
-			queryContent.value = res.data.data
-
-			console.log('params', params)
-			styleConverstionStream(
-				{
-					"query": params.question,
-					"writing_style": styledChatStore.currentChatStyle,
-					"historys": params.history
-				},
-				userStore.accessToken,
-				() => {
-				},
-				(data: { answer: string; source_documents: any; }) => {
-					if (!stopCtrl.value.get(chatIdx)) {
-						lastText = lastText + data.answer
-						const result = lastText
-						updateChat(
-							uuid.value,
-							chatIdx,
-							{
-								dateTime: new Date().toLocaleString(),
-								text: result,
-								inversion: false,
-								error: false,
-								loading: true,
-								conversationOptions: null,
-								requestOptions: { prompt: message, options: { ...options } },
-								type: 'source_documents',
-								sourceDocumentsTypeData: {
-									answer: data.answer,
-									source_documents: data.source_documents,
-								},
+		console.log('params,streamParams', streamParams)
+		styleConverstionStream(
+			{
+				style: streamParams.textStyle,
+				text: streamParams.inputText,
+			},
+			userStore.accessToken,
+			() => {
+			},
+			(data: { answer: string; source_documents: any; }) => {
+				console.log('data', data)
+				if (!stopCtrl.value.get(chatIdx)) {
+					lastText = lastText + data.answer
+					const result = lastText
+					updateChat(
+						uuid.value,
+						chatIdx,
+						{
+							dateTime: new Date().toLocaleString(),
+							text: result,
+							inversion: false,
+							error: false,
+							loading: true,
+							conversationOptions: null,
+							requestOptions: { prompt: message, options: { ...options } },
+							type: 'source_documents',
+							sourceDocumentsTypeData: {
+								answer: data.answer,
+								source_documents: data.source_documents,
 							},
-						)
-						scrollToBottomIfAtBottom()
-					}
-				},
-				(error: string | (() => VNodeChild)) => {
-					messageFunction.error(error)
-					if (!stopCtrl.value.get(chatIdx)) {
-						loading.value = false
-						onRegenerateing.value = false
-						updateChatSome(uuid.value, chatIdx, { loading: false })
-						chatStore.setIsChatLoading(false)
-					}
-					else {
-						stopCtrl.value.delete(chatIdx)
-					}
-				},
-				() => {
-					queryContent.value = ''
-					if (!stopCtrl.value.get(chatIdx)) {
-						loading.value = false
-						onRegenerateing.value = false
-						updateChatSome(uuid.value, chatIdx, { loading: false })
-						chatStore.setIsChatLoading(false)
-					}
-					else {
-						stopCtrl.value.delete(chatIdx)
-					}
-				},
-			)
-		}).catch((_err) => {
-		}).finally(() => {
-		})
+						},
+					)
+					scrollToBottomIfAtBottom()
+				}
+			},
+			(error: string | (() => VNodeChild)) => {
+				messageFunction.error(error)
+				if (!stopCtrl.value.get(chatIdx)) {
+					loading.value = false
+					onRegenerateing.value = false
+					updateChatSome(uuid.value, chatIdx, { loading: false })
+				}
+				else {
+					stopCtrl.value.delete(chatIdx)
+				}
+			},
+			() => {
+				console.log("close")
+				queryContent.value = ''
+				if (!stopCtrl.value.get(chatIdx)) {
+					loading.value = false
+					onRegenerateing.value = false
+					updateChatSome(uuid.value, chatIdx, { loading: false })
+					// styledChatStore.setChatSendDisable(false)
+
+				}
+				else {
+					stopCtrl.value.delete(chatIdx)
+				}
+			},
+
+		)
+
 	}
 	catch (error) {
-		chatStore.setIsChatLoading(false)
 	}
 }
 
 async function onConversation() {
-	console.log('onConversation')
-	chatStore.setIsChatLoading(true)
 	if (loading.value)
 		return
 	if (onRegenerateing.value)
 		return
-	// if (!accessToken.value) {
-	// 	messageFunction.error(t('common.unauthorizedTips'))
-	// 	return
-	// }
+	if (!accessToken.value) {
+		messageFunction.error(t('common.unauthorizedTips'))
+		return
+	}
 	const message = prompt.value
 	const selectedContent = quoteStr.value
 	history.value = []
@@ -289,65 +240,24 @@ async function onConversation() {
 	scrollToBottom()
 
 	try {
-		const lastText = ''
-		let res, result
+		console.log(' fetchChatAPIOnce currentChatMode.value', currentChatMode.value)
 		const fetchChatAPIOnce = async () => {
-			// send prompt to get response
 			switch (currentChatMode.value) {
-				case 1:
-					await postChatPublicRepoStream({
-						question: message,
-						history: history.value,
-						model: chatStore.selectedModel,
-					}, message, dataSources.value.length - 1, options)
-					return
-				case 2:
-					// eslint-disable-next-line no-case-declarations
-					const kbs = chatStore.myFileList.filter((ele: any) => ele.selected).map(ele => ({
-						id: ele.kb_name,
-						type: 1,
-						fileName: ele.children.filter((ele: { isSelected: any }) => ele.isSelected).map((ele: any) => ele.name),
-					}))
-					if (kbs[0].fileName.length === 0)
-						messageFunction.error('请选择至少一个文件或先上传文件')
-					await postChatMyKbStream({
-						kbs,
-						question: message,
-						history: history.value,
-						model: chatStore.selectedModel,
-						selectedContent: quoteStr.value,
-					}, message, dataSources.value.length - 1, options)
-
-					return
+				case 'selectStyle':
+					await styleChatStream(dataSources.value.length - 1)
+					break
+				case 'memberPromotion':
+					break
+				case 'marketingWriting':
+					break
+				case 'chat':
+					console.log("chat")
 				default:
-					res = await chat({
-						question: message,
-						history: history.value,
-					})
-					result = res.data.source_documents?.length > 0 ? `${res.data.response}\n\n数据来源：\n\n>${res.data.source_documents.join('>')}` : res.data.response
-					updateChat(
-						uuid.value,
-						dataSources.value.length - 1,
-						{
-							dateTime: new Date().toLocaleString(),
-							text: lastText + (result ?? ''),
-							inversion: false,
-							error: false,
-							loading: false,
-							conversationOptions: null,
-							requestOptions: { prompt: message, options: { ...options } },
-						},
-					)
-					scrollToBottom()
-					scrollToBottomIfAtBottom()
-					loading.value = false
-					updateChatSome(uuid.value, dataSources.value.length - 1, { loading: false })
+					break
 			}
 		}
-
 		await fetchChatAPIOnce()
 		scrollToBottom()
-		styledChatStore.setChatSendDisable(false)
 	}
 	catch (error: any) {
 		const errorMessage = error?.message ?? t('common.wrong')
@@ -400,135 +310,6 @@ async function onConversation() {
 	}
 }
 
-//@ts-ignore
-// async function onRegenerate() {
-// 	if (loading.value)
-// 		return
-// 	if (onRegenerateing.value)
-// 		return
-// 	if (!accessToken.value) {
-// 		messageFunction.error(t('common.unauthorizedTips'))
-// 		return
-// 	}
-// 	controller = new AbortController()
-
-// 	onRegenerateing.value = true
-
-// 	updateChatSome(uuid.value, dataSources.value.length - 1, { loading: true, text: '' })
-
-// 	// history.value = []
-// 	if (usingContext.value) {
-// 		for (let i = 0; i < dataSources.value.length - 2; i = i + 2)
-// 			history.value.push([dataSources.value[i].text, dataSources.value[i + 1].text.split('\n\n数据来源：\n\n>')[0]])
-// 	}
-// 	else { history.value.length = 0 }
-
-// 	const { requestOptions } = dataSources.value[dataSources.value.length - 1]
-
-// 	const message = requestOptions?.prompt ?? ''
-
-// 	let options: Chat.ConversationRequest = {}
-
-// 	if (requestOptions.options)
-// 		options = { ...requestOptions.options }
-
-// 	loading.value = true
-
-// 	try {
-// 		const lastText = ''
-// 		let res, result
-// 		const fetchChatAPIOnce = async () => {
-// 			// send prompt to get response
-// 			switch (currentChatMode.value) {
-// 				case 1:
-// 					await postChatPublicRepoStream({
-// 						question: message,
-// 						history: history.value,
-// 						model: 'claude 2',
-// 						knowledge_base_id: chatStore.knowledgeRepo.filter((ele: any) => ele.selected)[0].children.filter((ele: any) => ele.checked).map((ele: any) => {
-// 							return {
-// 								id: chatStore.knowledgeRepo.filter((ele: any) => ele.selected)[0].name,
-// 								filter: 'time',
-// 								timeRange: [ele.startDate, ele.endDate],
-// 							}
-// 						}),
-// 					}, message, dataSources.value.length - 1, options)
-// 					return
-// 				case 2:
-// 					// eslint-disable-next-line no-case-declarations
-// 					const kbs = chatStore.myFileList.filter((ele: any) => ele.selected).map(ele => ({
-// 						id: ele.kb_name,
-// 						type: 1,
-// 						fileName: ele.children.filter((ele: { isSelected: any }) => ele.isSelected).map((ele: any) => ele.name),
-// 					}))
-// 					if (kbs[0].fileName.length === 0)
-// 						messageFunction.error('请选择至少一个文件或先上传文件')
-// 					await postChatMyKbStream({
-// 						kbs,
-// 						question: message,
-// 						history: history.value,
-// 						model: 'claude 2',
-// 					}, message, dataSources.value.length - 1, options)
-// 					return
-// 				default:
-// 					res = await chat({
-// 						question: message,
-// 						history: history.value,
-// 					})
-// 					result = res.data.source_documents?.length > 0 ? `${res.data.response}\n\n数据来源：\n\n>${res.data.source_documents.join('>')}` : res.data.response
-// 					updateChat(
-// 						uuid.value,
-// 						dataSources.value.length - 1,
-// 						{
-// 							dateTime: new Date().toLocaleString(),
-// 							text: lastText + (result ?? ''),
-// 							inversion: false,
-// 							error: false,
-// 							loading: false,
-// 							conversationOptions: null,
-// 							requestOptions: { prompt: message, options: { ...options } },
-// 						},
-// 					)
-// 					scrollToBottomIfAtBottom()
-// 					styledChatStore.setChatSendDisable(false)
-// 					loading.value = false
-// 					onRegenerateing.value = false
-// 					updateChatSome(uuid.value, dataSources.value.length - 1, { loading: false })
-// 			}
-// 		}
-// 		await fetchChatAPIOnce()
-// 	}
-// 	catch (error: any) {
-// 		if (error.message === 'canceled') {
-// 			updateChatSome(
-// 				uuid.value,
-// 				dataSources.value.length - 1,
-// 				{
-// 					loading: false,
-// 				},
-// 			)
-// 			return
-// 		}
-// 		const errorMessage = error?.message ?? t('common.wrong')
-// 		updateChat(
-// 			uuid.value,
-// 			dataSources.value.length - 1,
-// 			{
-// 				dateTime: new Date().toLocaleString(),
-// 				text: errorMessage,
-// 				inversion: false,
-// 				error: true,
-// 				loading: false,
-// 				conversationOptions: null,
-// 				requestOptions: { prompt: message, options: { ...options } },
-// 			},
-// 		)
-// 	}
-// 	finally {
-// 		loading.value = false
-// 	}
-// }
-
 onMounted(() => {
 	if (!getChatByUuidAndIndex(uuid.value, 0)) {
 		updateWholeChatByUuid(uuid.value, [])
@@ -537,12 +318,15 @@ onMounted(() => {
 	switch (uuid.value) {
 		case 'selectStyle':
 			styledChatStore.setCurrentChatStyle('selectStyle')
+			currentChatMode.value = 'selectStyle'
 			break
 		case 'memberPromotion':
 			styledChatStore.setCurrentChatStyle('memberPromotion')
+			currentChatMode.value = 'memberPromotion'
 			break
 		case 'marketingWriting':
 			styledChatStore.setCurrentChatStyle('marketingWriting')
+			currentChatMode.value = 'marketingWriting'
 			break
 		default:
 			break
@@ -553,17 +337,19 @@ watch(latestEvent, (newEvent) => {
 	if (newEvent && newEvent.type === 'addChat') {
 		console.log('newEvent', newEvent.data)
 		switch (newEvent.data.type) {
-			case 'styledChat':
+			case 'selectStyle':
+				streamParams = newEvent.data
+				currentChatMode.value = 'selectStyle'
 				prompt.value = newEvent.data.prompt
-				handleSubmit()
+				onConversation()
 				break
 			case 'memberPromotion':
+				currentChatMode.value = 'memberPromotion'
 				prompt.value = newEvent.data.inputText
-				handleSubmit()
 				break
 			case 'marketingWriting':
+				currentChatMode.value = 'marketingWriting'
 				prompt.value = newEvent.data.inputText
-				handleSubmit()
 			default:
 				break
 		}
@@ -574,11 +360,11 @@ watch(latestEvent, (newEvent) => {
 	<div class="flex flex-col w-full h-full bg-grey "
 		style="position: relative;background: rgba(245, 247, 253, 1); padding-left:266px;padding-right:266px;">
 		<main class="overflow-hidden" style="height: calc(100% - footerRef.value?.clientHeight);flex:9">
-			<div class="h-full overflow-hidden overflow-y-auto" >
-				<div id="image-wrapper " class="w-full h-full max-w-screen-xl m-auto dark:bg-[#101014]"  
+			<div class="h-full overflow-hidden overflow-y-auto">
+				<div id="image-wrapper " class="w-full h-full max-w-screen-xl m-auto dark:bg-[#101014]"
 					style="background: rgba(245, 247, 253, 1);overflow:scroll" ref="scrollRef">
-					<div >
-						<Message v-for="(item, index) of dataSources" :key="index" :date-time="item.dateTime" 
+					<div>
+						<Message v-for="(item, index) of dataSources" :key="index" :date-time="item.dateTime"
 							:text="item.text" :inversion="item.inversion" :error="item.error" :loading="item.loading"
 							:regenerate="index === (dataSources.length - 1) && !onRegenerateing" :type="item.type"
 							:should-not-have-regenerate-icon="item.shouldNotHaveRegenerateIcon"
@@ -692,11 +478,13 @@ watch(latestEvent, (newEvent) => {
 }
 
 .submit-button {
-    opacity: 1; /* Default opacity */
-    transition: opacity 0.3s ease; /* Optional smooth transition */
+	opacity: 1;
+	/* Default opacity */
+	transition: opacity 0.3s ease;
+	/* Optional smooth transition */
 }
 
 .submit-button.disabled {
-    opacity: 0.5;
+	opacity: 0.5;
 }
 </style>

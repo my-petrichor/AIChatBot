@@ -48,7 +48,7 @@ export const fetchStream = (method: string, url: string, auth: string, data: obj
 
 export const fetchStream2 = (method: string, url: string, auth: string, data: object, onStart: () => any, onUpdate: (arg0: any) => any, onError: (arg0: any) => any, onClose: () => any) => {
   const params = JSON.stringify(data)
-	console.log('fetchStream2',url,url.replace(/^\/api2/, ''),url.replace(/^\/api2/, ''))
+	// console.log('fetchStream2',url,url.replace(/^\/api2/, ''),url.replace(/^\/api2/, ''))
   const source = new SSE(url, {
     withCredentials: true,
     headers: {
@@ -60,10 +60,12 @@ export const fetchStream2 = (method: string, url: string, auth: string, data: ob
   })
 	console.log('fetchStream2', source)
   source.addEventListener('open', () => {
+    console.log('open')
     onStart()
   })
 
   source.addEventListener('message', (e: { data: string }) => {
+    console.log('message', e.data)
     const data = e.data ? JSON.parse(e.data) : {}
     onUpdate(data)
   })
