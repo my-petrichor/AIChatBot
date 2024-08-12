@@ -7,7 +7,7 @@ import new_conversation from '@/assets/new_conversation.png'
 import { useChatStore, useUserStore } from '@/store'
 import { useScroll } from '@/components/views/chat/hooks/useScroll';
 import { useChat } from '@/components/views/chat/hooks/useChat'
-import { chat, chatMyKbStream, styleConverstionStream, PostQueryMerge } from '@/api/chat';
+import { chat, chatMyKbStream, styleConverstionStream,styleConverstionStreamWithHistory, PostQueryMerge, } from '@/api/chat';
 import { t } from '@/locales';
 import { useStyledChatStore } from '@/store/modules/styledChat';
 import { storeToRefs } from 'pinia';
@@ -59,7 +59,7 @@ const handleKeyDown = (event: { key: string; shiftKey: any; }) => {
 	}
 }
 const handleSubmit = () => {
-	console.log('handleSubmit')
+	console.log('handleSubmit',currentChatMode.value)
 	scrollToBottom()
 	// currentChatMode.value = 'chat'
 	if (prompt.value.trim() === '') {
@@ -71,13 +71,17 @@ const handleSubmit = () => {
 	// styledChatStore.setChatSendDisable(true)
 	switch (currentChatMode.value) {
 		case 'selectStyle':
+		case 'selectStyleWithHistory':
+		console.log("case",currentChatMode.value)
+		currentChatMode.value = 'selectStyleWithHistory'
+		console.log("case2",currentChatMode.value,history)
 		streamParams = {
-			textStyle: styledChatStore.styleInStyledChat,
 			inputText: prompt.value,
+			historys: history.value
 		}
-
-			onConversation()
+		onConversation()
 			break
+
 		case 'memberPromotion':
 			onConversation()
 			break
@@ -108,7 +112,6 @@ const styleChatStream = async (chatIdx) => {
 	loading.value = true
 	let lastText = ''
 	try {
-		console.log('params,streamParams', streamParams)
 		styleConverstionStream(
 			{
 				style: streamParams.textStyle,
@@ -162,8 +165,76 @@ const styleChatStream = async (chatIdx) => {
 					loading.value = false
 					onRegenerateing.value = false
 					updateChatSome(uuid.value, chatIdx, { loading: false })
-					// styledChatStore.setChatSendDisable(false)
+				}
+				else {
+					stopCtrl.value.delete(chatIdx)
+				}
+			},
 
+		)
+
+	}
+	catch (error) {
+	}
+}
+
+const styleChatStreamWithHistory = async (chatIdx) => {
+	loading.value = true
+	let lastText = ''
+	try {
+		styleConverstionStreamWithHistory(
+			{
+				historys: streamParams.historys,
+				query: streamParams.inputText,
+			},
+			userStore.accessToken,
+			() => {
+			},
+			(data: { answer: string; source_documents: any; }) => {
+				console.log('data', data)
+				if (!stopCtrl.value.get(chatIdx)) {
+					lastText = lastText + data.answer
+					const result = lastText
+					updateChat(
+						uuid.value,
+						chatIdx,
+						{
+							dateTime: new Date().toLocaleString(),
+							text: result,
+							inversion: false,
+							error: false,
+							loading: true,
+							conversationOptions: null,
+							requestOptions: { prompt: message, options: { ...options } },
+							type: 'source_documents',
+							sourceDocumentsTypeData: {
+								answer: data.answer,
+								source_documents: data.source_documents,
+							},
+						},
+					)
+					scrollToBottomIfAtBottom()
+				}
+			},
+			(error: string | (() => VNodeChild)) => {
+				messageFunction.error(error)
+				if (!stopCtrl.value.get(chatIdx)) {
+					loading.value = false
+					onRegenerateing.value = false
+					updateChatSome(uuid.value, chatIdx, { loading: false })
+				}
+				else {
+					stopCtrl.value.delete(chatIdx)
+				}
+			},
+			() => {
+				console.log("close")
+				queryContent.value = ''
+				styledChatStore.setChatSendDisable(false)
+				if (!stopCtrl.value.get(chatIdx)) {
+					loading.value = false
+					onRegenerateing.value = false
+					updateChatSome(uuid.value, chatIdx, { loading: false })
 				}
 				else {
 					stopCtrl.value.delete(chatIdx)
@@ -242,12 +313,14 @@ async function onConversation() {
 	scrollToBottom()
 
 	try {
-		console.log(' fetchChatAPIOnce currentChatMode.value', currentChatMode.value)
 		const fetchChatAPIOnce = async () => {
 			switch (currentChatMode.value) {
 				case 'selectStyle':
 					await styleChatStream(dataSources.value.length - 1)
 					break
+					case 'selectStyleWithHistory':
+						await styleChatStreamWithHistory(dataSources.value.length - 1)
+						break
 				case 'memberPromotion':
 					break
 				case 'marketingWriting':

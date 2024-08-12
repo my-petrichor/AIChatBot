@@ -298,11 +298,7 @@ export const chatPublicRepoStream = (params: any, auth: any, onStart: () => any,
 export const styleConverstionStream = (params: any, auth: any, onStart: () => any, onUpdate: (arg0: any) => any, onError: (arg0: any) => any, onClose: () => any) => {
   return fetchStream2(
     'post',
-		// /api/v1/marketing/writing/style_conversion_stream
-    // 'api2/api/v1/marketing/writing/style_conversion_stream',
-    // /api/v1/style_rewriting/generate_query_stream
     'api2/api/v1/style_rewriting/generate_query_stream',
-		// '/api/local_doc_qa/local_doc_chat_stream_test',
     auth,
     params,
     onStart,
@@ -312,6 +308,18 @@ export const styleConverstionStream = (params: any, auth: any, onStart: () => an
   )
 }
 
+export const styleConverstionStreamWithHistory = (params: any, auth: any, onStart: () => any, onUpdate: (arg0: any) => any, onError: (arg0: any) => any, onClose: () => any) => {
+  return fetchStream2(
+    'post',
+    'api2/api/v1/style_rewriting/qa_conversion_stream',
+    auth,
+    params,
+    onStart,
+    onUpdate,
+    onError,
+    onClose,
+  )
+}
 export const chatMyKbStream = (params: any, auth: any, onStart: () => any, onUpdate: (arg0: any) => any, onError: (arg0: any) => any, onClose: () => any) => {
   return fetchStream(
     'post',

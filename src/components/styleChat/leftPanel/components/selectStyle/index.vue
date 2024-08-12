@@ -29,7 +29,7 @@ const handleSubmit = () => {
     }
     // set chatSendDisable
     // styledChatStore.setChatSendDisable(true)
-    styledChatStore.triggerEvent({ type: 'addChat', data: { ...presetForm.value, type: 'selectStyle', prompt: `根据风格${presetForm.value.textStyle}改写以下文案${presetForm.value.inputText}` } });
+    styledChatStore.triggerEvent({ type: 'addChat', data: { ...presetForm.value, type: 'selectStyle', prompt: `${presetForm.value.inputText}` } });
 
 }
 
