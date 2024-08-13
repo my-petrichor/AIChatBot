@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, reactive, watch } from 'vue'
+import { onMounted, ref, reactive, watch,computed } from 'vue'
 import {
     NButton, NForm, NFormItem, NIcon, NInput, NModal, NRadio, NSelect, useMessage
 } from 'naive-ui'
@@ -9,6 +9,7 @@ import { useStyledChatStore } from '@/store/modules/styledChat'
 import { getWritingStyleList2 } from '@/api/chat'
 
 const styledChatStore = useStyledChatStore();
+const chatSendDisable = computed(() => styledChatStore.chatSendDisable)
 const router = useRouter()
 const presetForm = ref({
     textStyle: '',
@@ -27,8 +28,6 @@ const handleSubmit = () => {
         message.error('请填写完整的会员信息')
         return
     }
-    // set chatSendDisable
-    // styledChatStore.setChatSendDisable(true)
     styledChatStore.triggerEvent({ type: 'addChat', data: { ...presetForm.value, type: 'selectStyle', prompt: `${presetForm.value.inputText}` } });
 
 }
@@ -51,10 +50,6 @@ onMounted(async () => {
     })
 })
 
-watch(presetForm, (newVal, oldVal) => {
-    console.log(newVal, oldVal)
-    styledChatStore.setStyleInStyledChat(newVal.textStyle)
-}, { deep: true })
 
 </script>
 
@@ -82,7 +77,9 @@ watch(presetForm, (newVal, oldVal) => {
                 <NInput v-model:value="presetForm.inputText" type="textarea" :autosize="{ minRows: 20, }"
                     placeholder="请输入" />
             </NFormItem>
-            <NButton type="info" size="large" @click="handleSubmit">确认</NButton>
+            <NButton
+            :disabled="!presetForm.textStyle || !presetForm.inputText || chatSendDisable"
+             type="info" size="large" @click="handleSubmit">确认</NButton>
         </NForm>
     </div>
 </template>

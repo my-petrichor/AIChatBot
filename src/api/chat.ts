@@ -311,7 +311,7 @@ export const styleConverstionStream = (params: any, auth: any, onStart: () => an
 export const styleConverstionStreamWithHistory = (params: any, auth: any, onStart: () => any, onUpdate: (arg0: any) => any, onError: (arg0: any) => any, onClose: () => any) => {
   return fetchStream2(
     'post',
-    'api2/api/v1/style_rewriting/qa_conversion_stream',
+    'api2/api/v1/style_rewriting/qa_conversation_stream',
     auth,
     params,
     onStart,

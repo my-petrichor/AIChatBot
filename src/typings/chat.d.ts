@@ -8,13 +8,14 @@ declare namespace Chat {
 		loading?: boolean
 		queryContent?: any
 		conversationOptions?: ConversationRequest | null
-		requestOptions: { prompt: string; options?: ConversationRequest | null }
+		// requestOptions: { prompt: string; options?: ConversationRequest | null }
 		type?:string
 		selectedContent?:string
 		sourceDocumentsTypeData?:any,
 		generalQueryData?:any,
 		abstractData?:any,
 		shouldNotHaveRegenerateIcon?:boolean
+		[string]:any
 	}
 
 	interface History {

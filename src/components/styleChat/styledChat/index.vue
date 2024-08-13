@@ -21,6 +21,7 @@ const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom } = useScroll()
 const route = useRoute()
 const uuid = ref<any>(route.params.uuid)
 const dataSources = computed(() => chatStore.getChatByUuid(uuid.value) ?? [])
+console.log('dataSources',dataSources.value)
 const isMobile = ref(false)
 const loading = ref(false)
 const currentChatMode = ref('')
@@ -44,37 +45,31 @@ const history = computed(() => dataSources.value.map((item: { text: string; }) =
 	return acc;
 }, []))
 
-let streamParams = {}
+let streamParams:any = {}
 
 // TODO: 根据chatSendDisable设置发送按钮 禁用与否
 const chatSendDisable = computed(() => styledChatStore.chatSendDisable)
 const handleKeyDown = (event: { key: string; shiftKey: any; }) => {
 	if (event.key === 'Enter' && event.shiftKey) {
-		console.log('Shift + Enter')
 		return
 	}
 	if (event.key === 'Enter') {
-		console.log('Enter')
 		handleSubmit()
 	}
 }
+
 const handleSubmit = () => {
-	console.log('handleSubmit',currentChatMode.value)
 	scrollToBottom()
-	// currentChatMode.value = 'chat'
 	if (prompt.value.trim() === '') {
 		return
 	}
 	if (loading.value) {
 		return
 	}
-	// styledChatStore.setChatSendDisable(true)
 	switch (currentChatMode.value) {
 		case 'selectStyle':
 		case 'selectStyleWithHistory':
-		console.log("case",currentChatMode.value)
 		currentChatMode.value = 'selectStyleWithHistory'
-		console.log("case2",currentChatMode.value,history)
 		streamParams = {
 			inputText: prompt.value,
 			historys: history.value
@@ -97,18 +92,20 @@ const handleSubmit = () => {
 	prompt.value = ''
 }
 const createNewConvesation = () => {
-	console.log("createNewConvesation")
+	if (loading.value || chatSendDisable.value) {
+		return
+	}
 	updateWholeChatByUuid(uuid.value, [])
 	styledChatStore.setChatSendDisable(false)
 	loading.value = false
-	prompt.value = ''
+	// prompt.value = ''
 }
 
 function clearSelectedQuery() {
 	chatStore.setSelectedQuery('')
 }
 
-const styleChatStream = async (chatIdx) => {
+const styleChatStream = async (chatIdx:any) => {
 	loading.value = true
 	let lastText = ''
 	try {
@@ -121,7 +118,6 @@ const styleChatStream = async (chatIdx) => {
 			() => {
 			},
 			(data: { answer: string; source_documents: any; }) => {
-				console.log('data', data)
 				if (!stopCtrl.value.get(chatIdx)) {
 					lastText = lastText + data.answer
 					const result = lastText
@@ -135,7 +131,7 @@ const styleChatStream = async (chatIdx) => {
 							error: false,
 							loading: true,
 							conversationOptions: null,
-							requestOptions: { prompt: message, options: { ...options } },
+							// requestOptions: { prompt: message, options: { ...options } },
 							type: 'source_documents',
 							sourceDocumentsTypeData: {
 								answer: data.answer,
@@ -158,7 +154,6 @@ const styleChatStream = async (chatIdx) => {
 				}
 			},
 			() => {
-				console.log("close")
 				queryContent.value = ''
 				styledChatStore.setChatSendDisable(false)
 				if (!stopCtrl.value.get(chatIdx)) {
@@ -178,7 +173,7 @@ const styleChatStream = async (chatIdx) => {
 	}
 }
 
-const styleChatStreamWithHistory = async (chatIdx) => {
+const styleChatStreamWithHistory = async (chatIdx:any) => {
 	loading.value = true
 	let lastText = ''
 	try {
@@ -191,7 +186,6 @@ const styleChatStreamWithHistory = async (chatIdx) => {
 			() => {
 			},
 			(data: { answer: string; source_documents: any; }) => {
-				console.log('data', data)
 				if (!stopCtrl.value.get(chatIdx)) {
 					lastText = lastText + data.answer
 					const result = lastText
@@ -205,7 +199,6 @@ const styleChatStreamWithHistory = async (chatIdx) => {
 							error: false,
 							loading: true,
 							conversationOptions: null,
-							requestOptions: { prompt: message, options: { ...options } },
 							type: 'source_documents',
 							sourceDocumentsTypeData: {
 								answer: data.answer,
@@ -228,7 +221,6 @@ const styleChatStreamWithHistory = async (chatIdx) => {
 				}
 			},
 			() => {
-				console.log("close")
 				queryContent.value = ''
 				styledChatStore.setChatSendDisable(false)
 				if (!stopCtrl.value.get(chatIdx)) {
@@ -249,6 +241,10 @@ const styleChatStreamWithHistory = async (chatIdx) => {
 }
 
 async function onConversation() {
+	if(history.value.length > 50){
+		messageFunction.error(t('本地历史聊天记录，请清空聊天记录后再进行下一次对话'))
+		return
+	}
 	if (loading.value)
 		return
 	if (onRegenerateing.value)
@@ -259,11 +255,11 @@ async function onConversation() {
 	}
 	const message = prompt.value
 	const selectedContent = quoteStr.value
-	history.value = []
+	// history.value = []
 
 	if (!message || message.trim() === '')
 		return
-
+	styledChatStore.setChatSendDisable(true)
 	controller = new AbortController()
 	addChat(
 		uuid.value,
@@ -274,7 +270,7 @@ async function onConversation() {
 			error: false,
 			selectedContent,
 			conversationOptions: null,
-			requestOptions: { prompt: message, options: null },
+			// requestOptions: { prompt: message, options: null },
 		},
 	)
 	scrollToBottom()
@@ -292,11 +288,11 @@ async function onConversation() {
 		stopCtrl.value.set(dataSources.value.length - 1, false)
 	}
 
-	let options: Chat.ConversationRequest = {}
-	const lastContext = conversationList.value[conversationList.value.length - 1]?.conversationOptions
+	// let options: Chat.ConversationRequest = {}
+	// const lastContext = conversationList.value[conversationList.value.length - 1]?.conversationOptions
 
-	if (lastContext && usingContext.value)
-		options = { ...lastContext }
+	// if (lastContext && usingContext.value)
+	// 	options = { ...lastContext }
 
 	addChat(
 		uuid.value,
@@ -307,7 +303,7 @@ async function onConversation() {
 			inversion: false,
 			error: false,
 			conversationOptions: null,
-			requestOptions: { prompt: message, options: { ...options } },
+			// requestOptions: { prompt: message, options: { ...options } },
 		},
 	)
 	scrollToBottom()
@@ -374,14 +370,13 @@ async function onConversation() {
 				error: true,
 				loading: false,
 				conversationOptions: null,
-				requestOptions: { prompt: message, options: { ...options } },
+				// requestOptions: { prompt: message, options: { ...options } },
 			},
 		)
 		scrollToBottomIfAtBottom()
 	}
 	finally {
 		scrollToBottom()
-		styledChatStore.setChatSendDisable(false)
 	}
 }
 
@@ -410,7 +405,6 @@ onMounted(() => {
 })
 watch(latestEvent, (newEvent) => {
 	if (newEvent && newEvent.type === 'addChat') {
-		console.log('newEvent', newEvent.data)
 		switch (newEvent.data.type) {
 			case 'selectStyle':
 				streamParams = newEvent.data
@@ -438,7 +432,7 @@ watch(latestEvent, (newEvent) => {
 			<div class="h-full overflow-hidden overflow-y-auto">
 				<div id="image-wrapper " class="w-full h-full max-w-screen-xl m-auto dark:bg-[#101014]"
 					style="background: rgba(245, 247, 253, 1);overflow:scroll" ref="scrollRef">
-					<div>
+					<div v-if='dataSources.length > 0'>
 						<Message v-for="(item, index) of dataSources" :key="index" :date-time="item.dateTime"
 							:text="item.text" :inversion="item.inversion" :error="item.error" :loading="item.loading"
 							:regenerate="index === (dataSources.length - 1) && !onRegenerateing" :type="item.type"
