@@ -59,6 +59,14 @@ export const getWritingStyleList2 = () => {
   })
 }
 
+// /api/v1/sale_promotion/list_brand_owners
+export const getBrandOwnerList = () => {
+  return api2({
+    url: '/api/v1/sale_promotion/list_brand_owners',
+    method: 'get',
+  })
+}
+
 export const bing_search = (params: any) => {
   return api({
     url: '/local_doc_qa/bing_search_chat',
@@ -308,10 +316,36 @@ export const styleConverstionStream = (params: any, auth: any, onStart: () => an
   )
 }
 
+export const memberPromotionConverstionStream = (params: any, auth: any, onStart: () => any, onUpdate: (arg0: any) => any, onError: (arg0: any) => any, onClose: () => any) => {
+  return fetchStream2(
+    'post',
+    'api2/api/v1/sale_promotion/generate_query_stream',
+    auth,
+    params,
+    onStart,
+    onUpdate,
+    onError,
+    onClose,
+  )
+}
+
 export const styleConverstionStreamWithHistory = (params: any, auth: any, onStart: () => any, onUpdate: (arg0: any) => any, onError: (arg0: any) => any, onClose: () => any) => {
   return fetchStream2(
     'post',
     'api2/api/v1/style_rewriting/qa_conversation_stream',
+    auth,
+    params,
+    onStart,
+    onUpdate,
+    onError,
+    onClose,
+  )
+}
+
+export const memberPromotionConverstionStreamWithHistory = (params: any, auth: any, onStart: () => any, onUpdate: (arg0: any) => any, onError: (arg0: any) => any, onClose: () => any) => {
+  return fetchStream2(
+    'post',
+    'api2/api/v1/sale_promotion/qa_conversation_stream',
     auth,
     params,
     onStart,

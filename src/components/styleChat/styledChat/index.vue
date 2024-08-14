@@ -7,7 +7,7 @@ import new_conversation from '@/assets/new_conversation.png'
 import { useChatStore, useUserStore } from '@/store'
 import { useScroll } from '@/components/views/chat/hooks/useScroll';
 import { useChat } from '@/components/views/chat/hooks/useChat'
-import { chat, chatMyKbStream, styleConverstionStream,styleConverstionStreamWithHistory, PostQueryMerge, } from '@/api/chat';
+import { chat, chatMyKbStream, styleConverstionStream, styleConverstionStreamWithHistory, PostQueryMerge, memberPromotionConverstionStream, memberPromotionConverstionStreamWithHistory } from '@/api/chat';
 import { t } from '@/locales';
 import { useStyledChatStore } from '@/store/modules/styledChat';
 import { storeToRefs } from 'pinia';
@@ -21,7 +21,7 @@ const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom } = useScroll()
 const route = useRoute()
 const uuid = ref<any>(route.params.uuid)
 const dataSources = computed(() => chatStore.getChatByUuid(uuid.value) ?? [])
-console.log('dataSources',dataSources.value)
+console.log('dataSources', dataSources.value)
 const isMobile = ref(false)
 const loading = ref(false)
 const currentChatMode = ref('')
@@ -45,7 +45,7 @@ const history = computed(() => dataSources.value.map((item: { text: string; }) =
 	return acc;
 }, []))
 
-let streamParams:any = {}
+let streamParams: any = {}
 
 // TODO: 根据chatSendDisable设置发送按钮 禁用与否
 const chatSendDisable = computed(() => styledChatStore.chatSendDisable)
@@ -69,15 +69,26 @@ const handleSubmit = () => {
 	switch (currentChatMode.value) {
 		case 'selectStyle':
 		case 'selectStyleWithHistory':
-		currentChatMode.value = 'selectStyleWithHistory'
-		streamParams = {
-			inputText: prompt.value,
-			historys: history.value
-		}
-		onConversation()
+			currentChatMode.value = 'selectStyleWithHistory'
+			streamParams = {
+				inputText: prompt.value,
+				historys: history.value
+			}
+			onConversation()
 			break
 
 		case 'memberPromotion':
+		case 'memberPromotionWithHistory':
+			// 			{
+			//   "query": "string",
+			//   "historys": []
+			// }
+			console.log('memberPromotion prompt.value ',prompt.value,history.value)
+			streamParams = {
+				query: prompt.value,
+				historys: history.value
+			}
+			currentChatMode.value = 'memberPromotionWithHistory'
 			onConversation()
 			break
 		case 'marketingWriting':
@@ -105,7 +116,7 @@ function clearSelectedQuery() {
 	chatStore.setSelectedQuery('')
 }
 
-const styleChatStream = async (chatIdx:any) => {
+const styleChatStream = async (chatIdx: any) => {
 	loading.value = true
 	let lastText = ''
 	try {
@@ -173,7 +184,82 @@ const styleChatStream = async (chatIdx:any) => {
 	}
 }
 
-const styleChatStreamWithHistory = async (chatIdx:any) => {
+// memberPromotionConverstionStream
+
+const memberPromotionStream = async (chatIdx: any) => {
+	loading.value = true
+	let lastText = ''
+	try {
+		memberPromotionConverstionStream(
+			{
+				brand_owner: streamParams.characterSetting,
+				shop_name: streamParams.shopName,
+				member_name: streamParams.shopName,
+				sex: streamParams.gender,
+				age: streamParams.age,
+				purchase_label: streamParams.shoppingLabel,
+				promotion_content: streamParams.discount,
+			},
+			userStore.accessToken,
+			() => {
+			},
+			(data: { answer: string; source_documents: any; }) => {
+				if (!stopCtrl.value.get(chatIdx)) {
+					lastText = lastText + data.answer
+					const result = lastText
+					updateChat(
+						uuid.value,
+						chatIdx,
+						{
+							dateTime: new Date().toLocaleString(),
+							text: result,
+							inversion: false,
+							error: false,
+							loading: true,
+							conversationOptions: null,
+							// requestOptions: { prompt: message, options: { ...options } },
+							type: 'source_documents',
+							sourceDocumentsTypeData: {
+								answer: data.answer,
+								source_documents: data.source_documents,
+							},
+						},
+					)
+					scrollToBottomIfAtBottom()
+				}
+			},
+			(error: string | (() => VNodeChild)) => {
+				messageFunction.error(error)
+				if (!stopCtrl.value.get(chatIdx)) {
+					loading.value = false
+					onRegenerateing.value = false
+					updateChatSome(uuid.value, chatIdx, { loading: false })
+				}
+				else {
+					stopCtrl.value.delete(chatIdx)
+				}
+			},
+			() => {
+				queryContent.value = ''
+				styledChatStore.setChatSendDisable(false)
+				if (!stopCtrl.value.get(chatIdx)) {
+					loading.value = false
+					onRegenerateing.value = false
+					updateChatSome(uuid.value, chatIdx, { loading: false })
+				}
+				else {
+					stopCtrl.value.delete(chatIdx)
+				}
+			},
+
+		)
+
+	}
+	catch (error) {
+	}
+}
+
+const styleChatStreamWithHistory = async (chatIdx: any) => {
 	loading.value = true
 	let lastText = ''
 	try {
@@ -240,8 +326,75 @@ const styleChatStreamWithHistory = async (chatIdx:any) => {
 	}
 }
 
+const memberPromotionStreamWithHistory = async (chatIdx: any) => {
+	loading.value = true
+	let lastText = ''
+	try {
+		memberPromotionConverstionStreamWithHistory(
+			{
+				historys: streamParams.historys,
+				query: streamParams.query,
+			},
+			userStore.accessToken,
+			() => {
+			},
+			(data: { answer: string; source_documents: any; }) => {
+				if (!stopCtrl.value.get(chatIdx)) {
+					lastText = lastText + data.answer
+					const result = lastText
+					updateChat(
+						uuid.value,
+						chatIdx,
+						{
+							dateTime: new Date().toLocaleString(),
+							text: result,
+							inversion: false,
+							error: false,
+							loading: true,
+							conversationOptions: null,
+							type: 'source_documents',
+							sourceDocumentsTypeData: {
+								answer: data.answer,
+								source_documents: data.source_documents,
+							},
+						},
+					)
+					scrollToBottomIfAtBottom()
+				}
+			},
+			(error: string | (() => VNodeChild)) => {
+				messageFunction.error(error)
+				if (!stopCtrl.value.get(chatIdx)) {
+					loading.value = false
+					onRegenerateing.value = false
+					updateChatSome(uuid.value, chatIdx, { loading: false })
+				}
+				else {
+					stopCtrl.value.delete(chatIdx)
+				}
+			},
+			() => {
+				queryContent.value = ''
+				styledChatStore.setChatSendDisable(false)
+				if (!stopCtrl.value.get(chatIdx)) {
+					loading.value = false
+					onRegenerateing.value = false
+					updateChatSome(uuid.value, chatIdx, { loading: false })
+				}
+				else {
+					stopCtrl.value.delete(chatIdx)
+				}
+			},
+
+		)
+
+	}
+	catch (error) {
+	}
+}
 async function onConversation() {
-	if(history.value.length > 50){
+	console.log('onConversation')
+	if (history.value.length > 50) {
 		messageFunction.error(t('本地历史聊天记录，请清空聊天记录后再进行下一次对话'))
 		return
 	}
@@ -314,10 +467,14 @@ async function onConversation() {
 				case 'selectStyle':
 					await styleChatStream(dataSources.value.length - 1)
 					break
-					case 'selectStyleWithHistory':
-						await styleChatStreamWithHistory(dataSources.value.length - 1)
-						break
+				case 'selectStyleWithHistory':
+					await styleChatStreamWithHistory(dataSources.value.length - 1)
+					break
 				case 'memberPromotion':
+					await memberPromotionStream(dataSources.value.length - 1)
+					break
+				case 'memberPromotionWithHistory':
+					await memberPromotionStreamWithHistory(dataSources.value.length - 1)
 					break
 				case 'marketingWriting':
 					break
@@ -391,8 +548,8 @@ onMounted(() => {
 			currentChatMode.value = 'selectStyle'
 			break
 		case 'memberPromotion':
-			styledChatStore.setCurrentChatStyle('memberPromotion')
-			currentChatMode.value = 'memberPromotion'
+			styledChatStore.setCurrentChatStyle("memberPromotion")
+			currentChatMode.value = "memberPromotion"
 			break
 		case 'marketingWriting':
 			styledChatStore.setCurrentChatStyle('marketingWriting')
@@ -405,6 +562,7 @@ onMounted(() => {
 })
 watch(latestEvent, (newEvent) => {
 	if (newEvent && newEvent.type === 'addChat') {
+		console.log('newEvent', newEvent)
 		switch (newEvent.data.type) {
 			case 'selectStyle':
 				streamParams = newEvent.data
@@ -413,8 +571,10 @@ watch(latestEvent, (newEvent) => {
 				onConversation()
 				break
 			case 'memberPromotion':
-				currentChatMode.value = 'memberPromotion'
-				prompt.value = newEvent.data.inputText
+				streamParams = newEvent.data
+				currentChatMode.value = "memberPromotion"
+				prompt.value = newEvent.data.discount
+				onConversation()
 				break
 			case 'marketingWriting':
 				currentChatMode.value = 'marketingWriting'
