@@ -346,6 +346,7 @@ export const memberPromotionConverstionStream = (params: any, auth: any, onStart
 }
 
 export const marketingWritingConverstionStream = (params: any, auth: any, onStart: () => any, onUpdate: (arg0: any) => any, onError: (arg0: any) => any, onClose: () => any) => {
+  console.log(params, "======params")
   return fetchStream2(
     'post',
     'api2/api/v1/marketing_writing/generate_query_stream',
@@ -385,6 +386,7 @@ export const memberPromotionConverstionStreamWithHistory = (params: any, auth: a
 }
 
 export const marketingWritingConverstionStreamWithHistory = (params: any, auth: any, onStart: () => any, onUpdate: (arg0: any) => any, onError: (arg0: any) => any, onClose: () => any) => {
+  console.log("==marketingWritingConverstionStreamWithHistorymarketingWritingConverstionStreamWithHistorymarketingWritingConverstionStreamWithHistorymarketingWritingConverstionStreamWithHistory")
   return fetchStream2(
     'post',
     'api2/api/v1/marketing_writing/qa_conversation_stream',

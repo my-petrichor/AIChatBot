@@ -92,8 +92,6 @@ const handleSubmit = () => {
 			onConversation()
 			break
 		case 'marketingWriting':
-			onConversation()
-			break
 		case 'marketingWritingWithHistory':
 			streamParams = {
 				query: prompt.value,
@@ -608,7 +606,6 @@ async function onConversation() {
 		},
 	)
 	scrollToBottom()
-
 	try {
 		const fetchChatAPIOnce = async () => {
 			switch (currentChatMode.value) {
