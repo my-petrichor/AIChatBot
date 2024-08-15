@@ -7,7 +7,7 @@ import new_conversation from '@/assets/new_conversation.png'
 import { useChatStore, useUserStore } from '@/store'
 import { useScroll } from '@/components/views/chat/hooks/useScroll';
 import { useChat } from '@/components/views/chat/hooks/useChat'
-import { chat, chatMyKbStream, styleConverstionStream, styleConverstionStreamWithHistory, PostQueryMerge, memberPromotionConverstionStream, memberPromotionConverstionStreamWithHistory } from '@/api/chat';
+import { chat, chatMyKbStream, styleConverstionStream, styleConverstionStreamWithHistory, PostQueryMerge, memberPromotionConverstionStream, memberPromotionConverstionStreamWithHistory, marketingWritingConverstionStream, marketingWritingConverstionStreamWithHistory } from '@/api/chat';
 import { t } from '@/locales';
 import { useStyledChatStore } from '@/store/modules/styledChat';
 import { storeToRefs } from 'pinia';
@@ -92,6 +92,14 @@ const handleSubmit = () => {
 			onConversation()
 			break
 		case 'marketingWriting':
+			onConversation()
+			break
+		case 'marketingWritingWithHistory':
+			streamParams = {
+				query: prompt.value,
+				historys: history.value
+			}
+			currentChatMode.value = 'marketingWritingWithHistory'
 			onConversation()
 			break
 		case 'chat':
@@ -199,6 +207,77 @@ const memberPromotionStream = async (chatIdx: any) => {
 				age: streamParams.age,
 				purchase_label: streamParams.shoppingLabel,
 				promotion_content: streamParams.discount,
+			},
+			userStore.accessToken,
+			() => {
+			},
+			(data: { answer: string; source_documents: any; }) => {
+				if (!stopCtrl.value.get(chatIdx)) {
+					lastText = lastText + data.answer
+					const result = lastText
+					updateChat(
+						uuid.value,
+						chatIdx,
+						{
+							dateTime: new Date().toLocaleString(),
+							text: result,
+							inversion: false,
+							error: false,
+							loading: true,
+							conversationOptions: null,
+							// requestOptions: { prompt: message, options: { ...options } },
+							type: 'source_documents',
+							sourceDocumentsTypeData: {
+								answer: data.answer,
+								source_documents: data.source_documents,
+							},
+						},
+					)
+					scrollToBottomIfAtBottom()
+				}
+			},
+			(error: string | (() => VNodeChild)) => {
+				messageFunction.error(error)
+				if (!stopCtrl.value.get(chatIdx)) {
+					loading.value = false
+					onRegenerateing.value = false
+					updateChatSome(uuid.value, chatIdx, { loading: false })
+				}
+				else {
+					stopCtrl.value.delete(chatIdx)
+				}
+			},
+			() => {
+				queryContent.value = ''
+				styledChatStore.setChatSendDisable(false)
+				if (!stopCtrl.value.get(chatIdx)) {
+					loading.value = false
+					onRegenerateing.value = false
+					updateChatSome(uuid.value, chatIdx, { loading: false })
+				}
+				else {
+					stopCtrl.value.delete(chatIdx)
+				}
+			},
+
+		)
+
+	}
+	catch (error) {
+	}
+}
+
+const marketingWritingStream = async (chatIdx: any) => {
+	loading.value = true
+	let lastText = ''
+	try {
+		marketingWritingConverstionStream(
+			{
+				brand_owner: streamParams.characterSetting,
+    		shop_type: streamParams.shoppingType,
+    		festival: streamParams.festival,
+    		platform: streamParams.platform,
+    		promotion: streamParams.discount,
 			},
 			userStore.accessToken,
 			() => {
@@ -392,6 +471,75 @@ const memberPromotionStreamWithHistory = async (chatIdx: any) => {
 	catch (error) {
 	}
 }
+
+const marketingWritingStreamWithHistory = async (chatIdx: any) => {
+	loading.value = true
+	let lastText = ''
+	try {
+		marketingWritingConverstionStreamWithHistory(
+			{
+				historys: streamParams.historys,
+				query: streamParams.query,
+			},
+			userStore.accessToken,
+			() => {
+			},
+			(data: { answer: string; source_documents: any; }) => {
+				if (!stopCtrl.value.get(chatIdx)) {
+					lastText = lastText + data.answer
+					const result = lastText
+					updateChat(
+						uuid.value,
+						chatIdx,
+						{
+							dateTime: new Date().toLocaleString(),
+							text: result,
+							inversion: false,
+							error: false,
+							loading: true,
+							conversationOptions: null,
+							// requestOptions: { prompt: message, options: { ...options } },
+							type: 'source_documents',
+							sourceDocumentsTypeData: {
+								answer: data.answer,
+								source_documents: data.source_documents,
+							},
+						},
+					)
+					scrollToBottomIfAtBottom()
+				}
+			},
+			(error: string | (() => VNodeChild)) => {
+				messageFunction.error(error)
+				if (!stopCtrl.value.get(chatIdx)) {
+					loading.value = false
+					onRegenerateing.value = false
+					updateChatSome(uuid.value, chatIdx, { loading: false })
+				}
+				else {
+					stopCtrl.value.delete(chatIdx)
+				}
+			},
+			() => {
+				queryContent.value = ''
+				styledChatStore.setChatSendDisable(false)
+				if (!stopCtrl.value.get(chatIdx)) {
+					loading.value = false
+					onRegenerateing.value = false
+					updateChatSome(uuid.value, chatIdx, { loading: false })
+				}
+				else {
+					stopCtrl.value.delete(chatIdx)
+				}
+			},
+
+		)
+
+	}
+	catch (error) {
+	}
+}
+
 async function onConversation() {
 	console.log('onConversation')
 	if (history.value.length > 50) {
@@ -477,7 +625,10 @@ async function onConversation() {
 					await memberPromotionStreamWithHistory(dataSources.value.length - 1)
 					break
 				case 'marketingWriting':
+					await marketingWritingStream(dataSources.value.length - 1)
 					break
+				case 'marketingWritingWithHistory':
+					await marketingWritingStreamWithHistory(dataSources.value.length - 1)
 				case 'chat':
 					console.log("chat")
 				default:
@@ -577,8 +728,11 @@ watch(latestEvent, (newEvent) => {
 				onConversation()
 				break
 			case 'marketingWriting':
+				streamParams = newEvent.data
 				currentChatMode.value = 'marketingWriting'
-				prompt.value = newEvent.data.inputText
+				prompt.value = newEvent.data.discount
+				onConversation()
+				break
 			default:
 				break
 		}
