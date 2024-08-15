@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted, reactive, computed } from 'vue'
 import {
     NButton, NDatePicker, NDropdown, NForm, NFormItem, NIcon, NInput, NModal, NRadio, NSelect, NSpace,
     NUpload, NUploadDragger, useMessage
@@ -7,7 +7,9 @@ import {
 import { useRouter } from "vue-router"
 import { ArrowBackIosFilled } from '@vicons/material'
 import { useStyledChatStore } from '@/store/modules/styledChat'
+import { getMarketingWritingListShopTypes, getMarketingWritingBrandOwnerList } from '@/api/chat'
 
+const styledChatStore = useStyledChatStore();
 const router = useRouter()
 const presetForm = ref({
     characterSetting: '',
@@ -16,6 +18,8 @@ const presetForm = ref({
     platform: '',
     discount: '',
 })
+
+const chatSendDisable = computed(() => styledChatStore.chatSendDisable)
 const characterSettingList = ref<any>([])
 const shoppingTypeList = ref<any>([])
 const message = useMessage()
@@ -30,28 +34,35 @@ const handleSubmit = () => {
         message.error('请填写完整的会员信息')
         return
     }
-    styledChatStore.triggerEvent({ type: 'addChat', data: { ...presetForm.value, type: 'memberPromotion' } });
-    message.success('电子文案生成成功')
+    styledChatStore.triggerEvent({ type: 'addChat', data: { ...presetForm.value, type: 'marketingWriting' } });
+    // message.success('电子文案生成成功')
 
     setChatSendDisable(false)
 }
-
-const getCharacterSettingList = () => { }
-const getShoppingTypeList = () => { }
 
 function goHome() {
     router.push('/')
 }
 
 onMounted(async () => {
-    setChatSendDisable(true)
-    // const res = await getCharacterSettingList({})
-    // res?.data?.data?.forEach((item: any) => {
-    //     characterSettingList.value.push({
-    //         value: item.value,
-    //         label: item.label,
-    //         })
-    // })
+    getMarketingWritingBrandOwnerList().then((res: { data: { data: any[] } }) => {
+        characterSettingList.value = res.data.data.map((item: any) => {
+            return {
+                label: item,
+                value: item,
+            }
+        })
+        presetForm.value.characterSetting = characterSettingList.value[0].value
+    })
+    getMarketingWritingListShopTypes().then((res: { data: { data: any[] } }) => {
+        shoppingTypeList.value = res.data.data.map((item: any) => {
+            return {
+                label: item,
+                value: item,
+            }
+        })
+        presetForm.value.shoppingType = shoppingTypeList.value[0].value
+    })
 })
 </script>
 
@@ -90,7 +101,8 @@ onMounted(async () => {
                 <NInput v-model:value="presetForm.discount" placeholder="请输入" />
             </NFormItem>
             <NFormItem>
-                <NButton type="info" size="large" @click="handleSubmit">生成</NButton>
+                <NButton :disabled=" !presetForm.characterSetting || !presetForm.shoppingType || !presetForm.festival || !presetForm.platform || !presetForm.discount || chatSendDisable " 
+                type="info" size="large" @click="handleSubmit">生成</NButton>
             </NFormItem>
         </NForm>
     </div>

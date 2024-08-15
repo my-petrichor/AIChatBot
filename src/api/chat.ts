@@ -1,4 +1,4 @@
-import { api,api2, fetchStream,fetchStream2 } from './api'
+import { api, api2, fetchStream, fetchStream2 } from './api'
 
 export const chat = (params: any) => {
   return api({
@@ -63,6 +63,22 @@ export const getWritingStyleList2 = () => {
 export const getBrandOwnerList = () => {
   return api2({
     url: '/api/v1/sale_promotion/list_brand_owners',
+    method: 'get',
+  })
+}
+
+// /api/v1/marketing_writing/list_brand_owners
+export const getMarketingWritingBrandOwnerList = () => {
+  return api2({
+    url: '/api/v1/marketing_writing/list_brand_owners',
+    method: 'get',
+  })
+}
+
+// /api/v1/marketing_writing/list_shop_types
+export const getMarketingWritingListShopTypes = () => {
+  return api2({
+    url: '/api/v1/marketing_writing/list_shop_types',
     method: 'get',
   })
 }
@@ -329,6 +345,20 @@ export const memberPromotionConverstionStream = (params: any, auth: any, onStart
   )
 }
 
+export const marketingWritingConverstionStream = (params: any, auth: any, onStart: () => any, onUpdate: (arg0: any) => any, onError: (arg0: any) => any, onClose: () => any) => {
+  console.log(params, "======params")
+  return fetchStream2(
+    'post',
+    'api2/api/v1/marketing_writing/generate_query_stream',
+    auth,
+    params,
+    onStart,
+    onUpdate,
+    onError,
+    onClose,
+  )
+}
+
 export const styleConverstionStreamWithHistory = (params: any, auth: any, onStart: () => any, onUpdate: (arg0: any) => any, onError: (arg0: any) => any, onClose: () => any) => {
   return fetchStream2(
     'post',
@@ -354,6 +384,21 @@ export const memberPromotionConverstionStreamWithHistory = (params: any, auth: a
     onClose,
   )
 }
+
+export const marketingWritingConverstionStreamWithHistory = (params: any, auth: any, onStart: () => any, onUpdate: (arg0: any) => any, onError: (arg0: any) => any, onClose: () => any) => {
+  console.log("==marketingWritingConverstionStreamWithHistorymarketingWritingConverstionStreamWithHistorymarketingWritingConverstionStreamWithHistorymarketingWritingConverstionStreamWithHistory")
+  return fetchStream2(
+    'post',
+    'api2/api/v1/marketing_writing/qa_conversation_stream',
+    auth,
+    params,
+    onStart,
+    onUpdate,
+    onError,
+    onClose,
+  )
+}
+
 export const chatMyKbStream = (params: any, auth: any, onStart: () => any, onUpdate: (arg0: any) => any, onError: (arg0: any) => any, onClose: () => any) => {
   return fetchStream(
     'post',
