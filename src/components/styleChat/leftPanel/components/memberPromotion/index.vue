@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, reactive,watch,computed } from 'vue'
+import { ref, onMounted, reactive,computed } from 'vue'
 import {
     NButton, NForm, NFormItem, NIcon, NInput, NSelect,
     useMessage
@@ -7,7 +7,7 @@ import {
 import { useRouter } from "vue-router"
 import { ArrowBackIosFilled } from '@vicons/material'
 import { useStyledChatStore } from '@/store/modules/styledChat'
-import { getBrandOwnerList } from '@/api/chat'
+import { getBrandOwnerList ,postGenerateQueryPromptInSalePromotion} from '@/api/chat'
 
 const styledChatStore = useStyledChatStore();
 const router = useRouter()
@@ -41,9 +41,18 @@ const handleSubmit = () => {
         message.error('请填写完整的会员信息')
         return
     }
-    styledChatStore.triggerEvent({ type: 'addChat', data: { ...presetForm1.value, ...presetForm2.value,  type: 'memberPromotion' } });
-    console.log('handleSubmit', presetForm1.value, presetForm2.value)
-    setChatSendDisable(false)
+    postGenerateQueryPromptInSalePromotion({
+        brand_owner: presetForm1.value.characterSetting,
+        shop_name: presetForm2.value.shopName,
+        member_name: presetForm2.value.shopName,
+        sex: presetForm2.value.gender,
+        age: presetForm2.value.age,
+        purchase_label: presetForm1.value.shoppingLabel,
+        promotion_content: presetForm1.value.discount
+    }).then((res: { data: { data: any } }) => {
+        styledChatStore.triggerEvent({ type: 'addChat', data: { ...presetForm1.value, ...presetForm2.value, prompt: res.data.data, type: 'memberPromotion' } });
+    })
+
 }
 
 

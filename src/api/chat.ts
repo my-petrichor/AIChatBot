@@ -411,33 +411,46 @@ export const chatMyKbStream = (params: any, auth: any, onStart: () => any, onUpd
     onClose,
   )
 }
-
-// `post /generate/general_querys`
-// {
-//   "id":'ml',
-//    "type" : 1
-// }
-
-export const postGenerateGeneralQuery = (params: any, auth: any) => {
+export const postGenerateGeneralQuery = (params: any) => {
   return api({
     url: '/generate/general_querys',
     method: 'post',
     data: JSON.stringify(params),
     headers: {
-      auth, // Overriding the default Contendt-Type for this request
     },
   })
 }
 
-// ### Example request
+export const postGenerateQueryPromptForMarketWriting = (params: any) => {
+  return api2({
+    url: '/api/v1/marketing_writing/generate_query_prompt',
+    method: 'post',
+    data: JSON.stringify(params),
+    headers: {
+    },
+  })
+}
 
-// > 请求体参数
+export const postGenerateQueryPromptInStyleRewriting = (params: any) => {
+  return api2({
+    url: '/api/v1/style_rewriting/generate_query_prompt',
+    method: 'post',
+    data: JSON.stringify(params),
+    headers: {
+    },
+  })
+}
+export const postGenerateQueryPromptInSalePromotion = (params: any) => {
+  return api2({
+    url: '/api/v1/sale_promotion/generate_query_prompt',
+    method: 'post',
+    data: JSON.stringify(params),
+   
+  })
+}
 
-// ```json
-// {
-//   "kb_name": "test"
-// }
-// ```
+
+
 export const postConversationRecord = (params: any, auth: any) => {
   return api({
     url: '/my_kb/conversation_record',

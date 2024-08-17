@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref, reactive, watch,computed } from 'vue'
+import { onMounted, ref, reactive,computed } from 'vue'
 import {
-    NButton, NForm, NFormItem, NIcon, NInput, NModal, NRadio, NSelect, useMessage
+    NButton, NForm, NFormItem, NIcon, NInput, NSelect, useMessage
 } from 'naive-ui'
 import { useRouter } from "vue-router"
 import { ArrowBackIosFilled } from '@vicons/material'
 import { useStyledChatStore } from '@/store/modules/styledChat'
-import { getWritingStyleList2 } from '@/api/chat'
+import { getWritingStyleList2 ,postGenerateQueryPromptInStyleRewriting} from '@/api/chat'
 
 const styledChatStore = useStyledChatStore();
 const chatSendDisable = computed(() => styledChatStore.chatSendDisable)
@@ -28,7 +28,12 @@ const handleSubmit = () => {
         message.error('请填写完整的会员信息')
         return
     }
-    styledChatStore.triggerEvent({ type: 'addChat', data: { ...presetForm.value, type: 'selectStyle', prompt: `${presetForm.value.inputText}` } });
+    postGenerateQueryPromptInStyleRewriting({
+        style: presetForm.value.textStyle,
+        text: presetForm.value.inputText
+    }).then((res: { data: { data: any } }) => {
+        styledChatStore.triggerEvent({ type: 'addChat', data: { ...presetForm.value, prompt: res.data.data, type: 'selectStyle' } });
+    })
 
 }
 

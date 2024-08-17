@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive, computed } from 'vue'
 import {
-    NButton, NDatePicker, NDropdown, NForm, NFormItem, NIcon, NInput, NModal, NRadio, NSelect, NSpace,
-    NUpload, NUploadDragger, useMessage
+    NButton, NForm, NFormItem, NIcon, NInput,  NSelect,useMessage
 } from 'naive-ui'
 import { useRouter } from "vue-router"
 import { ArrowBackIosFilled } from '@vicons/material'
 import { useStyledChatStore } from '@/store/modules/styledChat'
-import { getMarketingWritingListShopTypes, getMarketingWritingBrandOwnerList } from '@/api/chat'
+import { getMarketingWritingListShopTypes, getMarketingWritingBrandOwnerList,postGenerateQueryPromptForMarketWriting } from '@/api/chat'
 
 const styledChatStore = useStyledChatStore();
 const router = useRouter()
@@ -29,13 +28,20 @@ const labelStyle = reactive({
     color: "#0d1117",
 })
 const { setChatSendDisable } = useStyledChatStore()
-const handleSubmit = () => {
+const handleSubmit = async () => {
     if (!presetForm.value.characterSetting || !presetForm.value.discount) {
         message.error('请填写完整的会员信息')
         return
     }
-    styledChatStore.triggerEvent({ type: 'addChat', data: { ...presetForm.value, type: 'marketingWriting' } });
-    // message.success('电子文案生成成功')
+    await postGenerateQueryPromptForMarketWriting({
+        brand_owner: presetForm.value.characterSetting,
+        shop_type: presetForm.value.shoppingType,
+        festival: presetForm.value.festival,
+        platform: presetForm.value.platform,
+        promotion: presetForm.value.discount
+    }).then((res: { data: { data: any } }) => {
+        styledChatStore.triggerEvent({ type: 'addChat', data: { ...presetForm.value, prompt:res.data.data, type: 'marketingWriting' } });
+    })
 
     setChatSendDisable(false)
 }

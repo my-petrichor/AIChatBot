@@ -48,11 +48,11 @@ export function useTheme() {
         },
         Input: {
           // borderHover: '0 0 0 2px rgba(74, 109, 255, 1)',
-          borderHover: '1px solid rgba(77, 80, 253, 1)',
-          borderFocus: '1px solid  rgba(77, 80, 253, 1)',
-          colorFocus: 'transparent',
-          boxShadowFocus: '1px solid  rgba(77, 80, 253, 1)',
-          backgroundColor: 'rgba(245, 247, 250, 1)',
+          // borderHover: '1px solid rgba(77, 80, 253, 1)',
+          // borderFocus: '1px solid  rgba(77, 80, 253, 1)',
+          // colorFocus: 'transparent',
+          // boxShadowFocus: '1px solid  rgba(77, 80, 253, 1)',
+          // backgroundColor: 'rgba(245, 247, 250, 1)',
           textColor: 'black',
         },
         Button: {
@@ -90,6 +90,14 @@ export function useTheme() {
         Split: {
           resizableTriggerColorHover: 'rgba(9,9,87,0.16)',
           resizableTriggerColor: 'white',
+        },
+        Select: {
+          // 1px solid rgba(77, 80, 253, 1)',
+          borderFocus: '1px solid  rgba(77, 80, 253, 1)',
+          colorFocus: 'transparent',
+          boxShadowFocus: '1px solid  rgba(77, 80, 253, 1)',
+          backgroundColor: 'rgba(245, 247, 250, 1)',
+          textColor: 'black',
         },
       // }
     }

@@ -7,7 +7,7 @@ import new_conversation from '@/assets/new_conversation.png'
 import { useChatStore, useUserStore } from '@/store'
 import { useScroll } from '@/components/views/chat/hooks/useScroll';
 import { useChat } from '@/components/views/chat/hooks/useChat'
-import { chat, chatMyKbStream, styleConverstionStream, styleConverstionStreamWithHistory, PostQueryMerge, memberPromotionConverstionStream, memberPromotionConverstionStreamWithHistory, marketingWritingConverstionStream, marketingWritingConverstionStreamWithHistory } from '@/api/chat';
+import {  styleConverstionStream, styleConverstionStreamWithHistory,  memberPromotionConverstionStream, memberPromotionConverstionStreamWithHistory, marketingWritingConverstionStream, marketingWritingConverstionStreamWithHistory } from '@/api/chat';
 import { t } from '@/locales';
 import { useStyledChatStore } from '@/store/modules/styledChat';
 import { storeToRefs } from 'pinia';
@@ -83,7 +83,7 @@ const handleSubmit = () => {
 			//   "query": "string",
 			//   "historys": []
 			// }
-			console.log('memberPromotion prompt.value ',prompt.value,history.value)
+			console.log('memberPromotion prompt.value ', prompt.value, history.value)
 			streamParams = {
 				query: prompt.value,
 				historys: history.value
@@ -130,6 +130,7 @@ const styleChatStream = async (chatIdx: any) => {
 			{
 				style: streamParams.textStyle,
 				text: streamParams.inputText,
+				prompt: streamParams.prompt,
 			},
 			userStore.accessToken,
 			() => {
@@ -205,6 +206,7 @@ const memberPromotionStream = async (chatIdx: any) => {
 				age: streamParams.age,
 				purchase_label: streamParams.shoppingLabel,
 				promotion_content: streamParams.discount,
+				prompt: streamParams.prompt,
 			},
 			userStore.accessToken,
 			() => {
@@ -272,10 +274,11 @@ const marketingWritingStream = async (chatIdx: any) => {
 		marketingWritingConverstionStream(
 			{
 				brand_owner: streamParams.characterSetting,
-    		shop_type: streamParams.shoppingType,
-    		festival: streamParams.festival,
-    		platform: streamParams.platform,
-    		promotion: streamParams.discount,
+				shop_type: streamParams.shoppingType,
+				festival: streamParams.festival,
+				platform: streamParams.platform,
+				promotion: streamParams.discount,
+				prompt: streamParams.prompt,
 			},
 			userStore.accessToken,
 			() => {
@@ -710,7 +713,6 @@ onMounted(() => {
 })
 watch(latestEvent, (newEvent) => {
 	if (newEvent && newEvent.type === 'addChat') {
-		console.log('newEvent', newEvent)
 		switch (newEvent.data.type) {
 			case 'selectStyle':
 				streamParams = newEvent.data
@@ -721,13 +723,13 @@ watch(latestEvent, (newEvent) => {
 			case 'memberPromotion':
 				streamParams = newEvent.data
 				currentChatMode.value = "memberPromotion"
-				prompt.value = newEvent.data.discount
+				prompt.value = newEvent.data.prompt
 				onConversation()
 				break
 			case 'marketingWriting':
 				streamParams = newEvent.data
 				currentChatMode.value = 'marketingWriting'
-				prompt.value = newEvent.data.discount
+				prompt.value = newEvent.data.prompt
 				onConversation()
 				break
 			default:
