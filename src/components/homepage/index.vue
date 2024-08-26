@@ -103,7 +103,7 @@ const clickButton = () => {
 					</div>
 					<div class="middleContentiImage">
 						<div class="middleContentImageUnLogin"><img src="@/assets/智能评论处理.png" alt="智能评论处理"></div>
-						<div class="middleContentImageTextUnLogin">只能评论处理</div>
+						<div class="middleContentImageTextUnLogin">智能评论处理</div>
 					</div>
 					<div class="rectangle">
 						<img src="@/assets/矩形 42455.png">

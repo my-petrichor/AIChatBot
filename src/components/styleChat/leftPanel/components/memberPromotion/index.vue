@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, reactive,computed } from 'vue'
+import { ref, onMounted, reactive,computed,watch } from 'vue'
 import {
     NButton, NForm, NFormItem, NIcon, NInput, NSelect,
     useMessage
@@ -21,8 +21,21 @@ const presetForm2 = ref({
     gender: '',
     age: '',
 })
+const options = [
+    { label: '是', value: '1' },
+    { label: '否', value: '0' },
+]
+const hasPromotionValue = ref('1')
+const computedButtonDisableBecauseOfHaveDiscountContent = computed(() => {
+    if(hasPromotionValue.value === '0') {
+        return false
+    }else {
+        return presetForm1.value.discount ? false : true
+    }
+   
+})
 const computeDisable = computed(() => {
-    return !presetForm1.value.characterSetting || !presetForm1.value.shoppingLabel || !presetForm1.value.discount || !presetForm2.value.shopName || !presetForm2.value || !presetForm2.value.age
+    return !presetForm1.value.characterSetting || !presetForm1.value.shoppingLabel  || !presetForm2.value.shopName || !presetForm2.value || !presetForm2.value.age
 })
 
 const chatSendDisable = computed(() => styledChatStore.chatSendDisable)
@@ -37,10 +50,10 @@ const labelStyle = reactive({
 const { setChatSendDisable } = useStyledChatStore()
 
 const handleSubmit = () => {
-    if (!presetForm1.value.characterSetting || !presetForm1.value.discount) {
-        message.error('请填写完整的会员信息')
-        return
-    }
+    // if (!presetForm1.value.characterSetting || !presetForm1.value.discount) {
+    //     message.error('请填写完整的会员信息')
+    //     return
+    // }
     postGenerateQueryPromptInSalePromotion({
         brand_owner: presetForm1.value.characterSetting,
         shop_name: presetForm2.value.shopName,
@@ -48,7 +61,7 @@ const handleSubmit = () => {
         sex: presetForm2.value.gender,
         age: presetForm2.value.age,
         purchase_label: presetForm1.value.shoppingLabel,
-        promotion_content: presetForm1.value.discount
+        promotion_content: hasPromotionValue.value === '0' ? '' : presetForm1.value.discount
     }).then((res: { data: { data: any } }) => {
         styledChatStore.triggerEvent({ type: 'addChat', data: { ...presetForm1.value, ...presetForm2.value, prompt: res.data.data, type: 'memberPromotion' } });
     })
@@ -59,7 +72,11 @@ const handleSubmit = () => {
 function goHome() {
     router.push('/')
 }
-
+watch(hasPromotionValue, (value) => {
+    if(value === '0') {
+        presetForm1.value.discount = ''
+    }
+})
 onMounted(async () => {
     setChatSendDisable(true)
     getBrandOwnerList().then((res: { data: { data: any[] } }) => {
@@ -110,11 +127,17 @@ onMounted(async () => {
             <NFormItem label="购买标签" label-width="auto" :label-style="labelStyle">
                 <NInput v-model:value="presetForm1.shoppingLabel" placeholder="请输入" />
             </NFormItem>
+            <NFormItem label="是否有优惠内容" label-width="auto" :label-style="labelStyle">
+                <NSelect v-model:value="hasPromotionValue" :options="options" />
+            </NFormItem>
             <NFormItem label="优惠内容" label-width="auto" :label-style="labelStyle">
-                <NInput v-model:value="presetForm1.discount" placeholder="请输入" />
+                <NInput 
+                :disabled="hasPromotionValue === '0'"
+
+                v-model:value="presetForm1.discount" placeholder="请输入" />
             </NFormItem>
             <NButton
-            :disabled=" computeDisable|| chatSendDisable"
+            :disabled=" computeDisable|| computedButtonDisableBecauseOfHaveDiscountContent || chatSendDisable"
 
 
              type="info" size="large" @click="handleSubmit">生成促活文案</NButton>
