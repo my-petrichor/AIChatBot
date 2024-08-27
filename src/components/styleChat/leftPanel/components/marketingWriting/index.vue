@@ -118,12 +118,9 @@ onMounted(async () => {
             <!-- <NFormItem label="平台" label-width="auto" :label-style="labelStyle">
                 <NInput v-model:value="presetForm.platform" placeholder="请输入" />
             </NFormItem> -->
-<<<<<<< Updated upstream
             <NFormItem label="是否有优惠内容" label-width="auto" :label-style="labelStyle">
                 <NSelect v-model:value="hasPromotionValue" :options="options" />
             </NFormItem>
-=======
->>>>>>> Stashed changes
             <NFormItem label="优惠内容" label-width="auto" :label-style="labelStyle">
                 <NInput 
                 :disabled="hasPromotionValue === '0'"
