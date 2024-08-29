@@ -128,7 +128,8 @@ onMounted(async () => {
             </NFormItem>
             <NFormItem>
                 <NButton :disabled=" !presetForm.characterSetting || !presetForm.shoppingType || !presetForm.festival  || 
-                computedButtonDisableBecauseOfHaveDiscountContent  || chatSendDisable " 
+                computedButtonDisableBecauseOfHaveDiscountContent  || chatSendDisable "             style="width: 100%; "
+
                 type="info" size="large" @click="handleSubmit">生成</NButton>
             </NFormItem>
         </NForm>

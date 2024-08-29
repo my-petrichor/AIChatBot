@@ -84,6 +84,7 @@ onMounted(async () => {
             </NFormItem>
             <NButton
             :disabled="!presetForm.textStyle || !presetForm.inputText || chatSendDisable"
+            style="width: 100%; "
              type="info" size="large" @click="handleSubmit">确认</NButton>
         </NForm>
     </div>

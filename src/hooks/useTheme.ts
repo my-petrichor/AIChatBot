@@ -48,8 +48,8 @@ export function useTheme() {
         },
         Input: {
           // borderHover: '0 0 0 2px rgba(74, 109, 255, 1)',
-          // borderHover: '1px solid rgba(77, 80, 253, 1)',
-          // borderFocus: '1px solid  rgba(77, 80, 253, 1)',
+          borderHover: '1px solid rgba(77, 80, 253, 1)',
+          borderFocus: '1px solid  rgba(77, 80, 253, 1)',
           // colorFocus: 'transparent',
           // boxShadowFocus: '1px solid  rgba(77, 80, 253, 1)',
           // backgroundColor: 'rgba(245, 247, 250, 1)',
@@ -91,13 +91,23 @@ export function useTheme() {
           resizableTriggerColorHover: 'rgba(9,9,87,0.16)',
           resizableTriggerColor: 'white',
         },
-        Select: {
+        InternalSelection: {
           // 1px solid rgba(77, 80, 253, 1)',
-          borderFocus: '1px solid  rgba(77, 80, 253, 1)',
+          // borderFocus: '1px solid  rgba(77, 80, 253, 1)',
           colorFocus: 'transparent',
           boxShadowFocus: '1px solid  rgba(77, 80, 253, 1)',
           backgroundColor: 'rgba(245, 247, 250, 1)',
           textColor: 'black',
+          optionTextColor: 'black',
+          borderHover: '1px solid rgba(77, 80, 253, 1)',
+          borderFocus: '1px solid  rgba(77, 80, 253, 1)',
+          borderActive: '1px solid  rgba(77, 80, 253, 1)',
+          optionTextColorActive: 'rgba(74, 109, 255, 1)',
+          optionTextColorHover: 'rgba(74, 109, 255, 1)',
+          optionTextColorPressed: 'rgba(74, 109, 255, 1)',
+          optionCheckColor: 'rgba(74, 109, 255, 1)',
+          optionColorActive: 'rgba(74, 109, 255, 1)',
+          actionTextColor: 'rgba(74, 109, 255, 1)',
         },
       // }
     }

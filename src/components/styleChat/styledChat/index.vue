@@ -4,6 +4,8 @@ import { useRoute } from 'vue-router'
 import { Message } from '@/components/views/chat/components'
 import { NInput, useMessage } from 'naive-ui'
 import new_conversation from '@/assets/new_conversation.png'
+import new_conversation_hover from '@/assets/new_conversation_hover.png'
+
 import { useChatStore, useUserStore } from '@/store'
 import { useScroll } from '@/components/views/chat/hooks/useScroll';
 import { useChat } from '@/components/views/chat/hooks/useChat'
@@ -25,6 +27,7 @@ console.log('dataSources', dataSources.value)
 const isMobile = ref(false)
 const loading = ref(false)
 const currentChatMode = ref('')
+const  isHovered = ref(false)
 // const currentChatMode = computed(() => styledChatStore.currentChatStyle)
 const stopCtrl = ref<any>()
 const footerRef = ref(null);
@@ -743,7 +746,7 @@ watch(latestEvent, (newEvent) => {
 		style="position: relative;background: rgba(245, 247, 253, 1); padding-left:266px;padding-right:266px;">
 		<main class="overflow-hidden" style="height: calc(100% - footerRef.value?.clientHeight);flex:9">
 			<div class="h-full overflow-hidden overflow-y-auto">
-				<div id="image-wrapper " class="w-full h-full max-w-screen-xl m-auto dark:bg-[#101014]"
+				<div id="image-wrapper " class="w-full h-full max-w-screen-xl m-auto dark:bg-[#101014] pt-10"
 					style="background: rgba(245, 247, 253, 1);overflow:scroll" ref="scrollRef">
 					<div v-if='dataSources.length > 0'>
 						<Message v-for="(item, index) of dataSources" :key="index" :date-time="item.dateTime"
@@ -759,9 +762,17 @@ watch(latestEvent, (newEvent) => {
 		<footer ref="footerRef" class="pt-3 pb-1" style="height: fit-content;margin-left: 20px;margin-right: 20px;">
 			<div class="w-full max-w-screen-xl m-auto flex align-center" style="height: fit-content; min-height: 50px;">
 				<div class="w-full flex" style="position: relative; height: fit-content;min-height: 50px;">
+					<!--:src='new_conversation' when hover is new_conversation_hover -->
 					<div
+
+					 @mouseover="isHovered = true"
+    @mouseleave="isHovered = false"
 						style="background-color: rgba(255, 255, 255, 1); width: 50px; height:50px;display:flex; justify-content:center;align-items:center; border-radius:2px;margin-right:10px;">
-						<img class="speech-button" :src='new_conversation' style="width: 30px; height:30px;opacity: 1; "
+						<img class="speech-button" 
+						
+						 :src="isHovered ? new_conversation_hover : new_conversation"
+						
+						style="width: 30px; height:30px;opacity: 1; "
 							@click="createNewConvesation">
 					</div>
 					<NInput ref="inputRef" v-model:value="prompt" class="flex items-center justify-center" style="padding-right: 50px; height: 100%;min-height: 50px;

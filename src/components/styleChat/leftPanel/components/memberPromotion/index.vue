@@ -110,34 +110,60 @@ onMounted(async () => {
         <NForm label-placement="top">
             <NFormItem label="品牌人设" label-width="auto" :label-style="labelStyle">
                 <NSelect v-model:value="presetForm1.characterSetting" :options="characterSettingList"
+           size="large"
                     placeholder="请选择" />
             </NFormItem>
             <p style="margin-bottom:2vh; color: #0d1117; font-size: 1em; font-weight: bold;">会员标签设定</p>
             <NForm label-placement="left" label-width="auto">
-                <NFormItem label="店铺名">
-                    <NInput v-model:value="presetForm2.shopName" placeholder="请输入" />
+                <NFormItem >
+                    <NInput size="large"  v-model:value="presetForm2.shopName" placeholder="请输入" >
+                        <template #prefix>
+        <span>店铺名</span>
+      </template>
+                    </NInput>
                 </NFormItem>
-                <NFormItem label="性别">
-                    <NInput v-model:value="presetForm2.gender" placeholder="请输入" />
+                <NFormItem >
+                    <NInput 
+                    size="large"
+                    v-model:value="presetForm2.gender" placeholder="请输入" >
+                        <template #prefix>
+        <span>性别</span>
+        </template>
+                    </NInput>
                 </NFormItem>
-                <NFormItem label="年龄">
-                    <NInput v-model:value="presetForm2.age" placeholder="请输入" />
+                <NFormItem >
+                    <NInput 
+                    size="large"
+                    v-model:value="presetForm2.age" placeholder="请输入" >
+                        <template #prefix>
+        <span>年龄</span>
+        </template>
+                    </NInput>
                 </NFormItem>
             </NForm>
-            <NFormItem label="购买标签" label-width="auto" :label-style="labelStyle">
-                <NInput v-model:value="presetForm1.shoppingLabel" placeholder="请输入" />
+            <NFormItem  label-width="auto" :label-style="labelStyle">
+                <NInput
+                size="large"
+                v-model:value="presetForm1.shoppingLabel" placeholder="请输入" >
+                    <template #prefix>
+        <span>购买标签</span>
+        </template>
+                </NInput>
             </NFormItem>
             <NFormItem label="是否有优惠内容" label-width="auto" :label-style="labelStyle">
-                <NSelect v-model:value="hasPromotionValue" :options="options" />
+                <NSelect 
+                size="large"
+                v-model:value="hasPromotionValue" :options="options" />
             </NFormItem>
             <NFormItem label="优惠内容" label-width="auto" :label-style="labelStyle">
                 <NInput 
                 :disabled="hasPromotionValue === '0'"
-
+size="large"
                 v-model:value="presetForm1.discount" placeholder="请输入" />
             </NFormItem>
             <NButton
             :disabled=" computeDisable|| computedButtonDisableBecauseOfHaveDiscountContent || chatSendDisable"
+            style="width: 100%; "
 
 
              type="info" size="large" @click="handleSubmit">生成促活文案</NButton>

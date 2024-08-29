@@ -117,11 +117,18 @@ onUnmounted(() => {
 
 <template>
   <div
-    class="text-white"
-    :class="wrapClass"
-    style="background-color: white;"
-  >
-    <div     style="background-color: white;"
+  class="text-white"
+  :class="wrapClass"
+  :style="{ backgroundColor: inversion ? 'rgba(77, 80, 253, 1)' : 'white' }"
+> 
+ <!-- style="background-color: white;" -->
+    <div     
+  
+ :style="{
+   backgroundColor: inversion ? 'rgba(77, 80, 253, 1)' : 'white',
+
+
+  }"
     ref="textRef" class="leading-relaxed break-words">
       <div v-if="!inversion">
         <template v-if="loading">
@@ -234,10 +241,17 @@ onUnmounted(() => {
             v-html="text"
           />
         </div>
-        <div v-else class="whitespace-pre-wrap" v-html="text" />
+        <div v-else class="whitespace-pre-wrap" v-html="text"
+        :style="{
+          color: inversion ? 'white' : 'red',
+        }"
+        />
       </div>
       <div
         v-else class="whitespace-pre-wrap"
+        :style="{
+          color: inversion ? 'white' : 'red',
+        }"
         v-html="text"
       />
     </div>
