@@ -23,7 +23,6 @@ const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom } = useScroll()
 const route = useRoute()
 const uuid = ref<any>(route.params.uuid)
 const dataSources = computed(() => chatStore.getChatByUuid(uuid.value) ?? [])
-console.log('dataSources', dataSources.value)
 const isMobile = ref(false)
 const loading = ref(false)
 const currentChatMode = ref('')
@@ -138,7 +137,7 @@ const styleChatStream = async (chatIdx: any) => {
 			userStore.accessToken,
 			() => {
 			},
-			(data: { answer: string; source_documents: any; }) => {
+			 (data: { answer: string; source_documents: any; }) => {
 				if (!stopCtrl.value.get(chatIdx)) {
 					lastText = lastText + data.answer
 					const result = lastText
@@ -160,7 +159,7 @@ const styleChatStream = async (chatIdx: any) => {
 							},
 						},
 					)
-					scrollToBottomIfAtBottom()
+					scrollToBottom()
 				}
 			},
 			(error: string | (() => VNodeChild)) => {
@@ -236,7 +235,7 @@ const memberPromotionStream = async (chatIdx: any) => {
 							},
 						},
 					)
-					scrollToBottomIfAtBottom()
+					scrollToBottom()
 				}
 			},
 			(error: string | (() => VNodeChild)) => {
@@ -308,7 +307,7 @@ const marketingWritingStream = async (chatIdx: any) => {
 							},
 						},
 					)
-					scrollToBottomIfAtBottom()
+					scrollToBottom()
 				}
 			},
 			(error: string | (() => VNodeChild)) => {
@@ -375,7 +374,7 @@ const styleChatStreamWithHistory = async (chatIdx: any) => {
 							},
 						},
 					)
-					scrollToBottomIfAtBottom()
+					scrollToBottom()
 				}
 			},
 			(error: string | (() => VNodeChild)) => {
@@ -442,7 +441,7 @@ const memberPromotionStreamWithHistory = async (chatIdx: any) => {
 							},
 						},
 					)
-					scrollToBottomIfAtBottom()
+					scrollToBottom()
 				}
 			},
 			(error: string | (() => VNodeChild)) => {
@@ -510,7 +509,7 @@ const marketingWritingStreamWithHistory = async (chatIdx: any) => {
 							},
 						},
 					)
-					scrollToBottomIfAtBottom()
+					scrollToBottom()
 				}
 			},
 			(error: string | (() => VNodeChild)) => {
@@ -652,7 +651,7 @@ async function onConversation() {
 					loading: false,
 				},
 			)
-			scrollToBottomIfAtBottom()
+			scrollToBottom()
 			return
 		}
 
@@ -684,7 +683,7 @@ async function onConversation() {
 				// requestOptions: { prompt: message, options: { ...options } },
 			},
 		)
-		scrollToBottomIfAtBottom()
+		scrollToBottom()
 	}
 	finally {
 		scrollToBottom()
