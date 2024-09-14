@@ -49,103 +49,114 @@ const clickButton = () => {
 		<div class="middleContent">
 			<div class="unit">
 				<div class="lingshouyingxiao">
-					<div class='middleContentiImageLeft'>
-						<img src="@/assets/AI零售营销.png" alt="AI零售营销">
-					</div>
-					<!-- <div v-if="isLogin" class="middleContentiImage" @click="onClick('marketingWriting')">
-						<div class="middleContentImageLogin"><img src="@/assets/AI营销写作.png" alt="AI营销写作"></div>
-						<div class="middleContentImageTextLogin">AI营销写作</div>
-					</div>
-					<div v-else class="middleContentiImage">
-						<div class="middleContentImageUnLogin"><img  src="@/assets/AI营销写作.png" alt="AI营销写作"></div>
-						<div class="middleContentImageTextUnLogin">AI营销写作</div>
-					</div> -->
-					<div class="middleContentiImage" @click="onClick('marketingWriting')">
-						<div class="middleContentImageLogin"><img src="@/assets/AI营销写作.png" alt="AI营销写作"></div>
-						<div class="middleContentImageTextLogin">AI营销写作</div>
-					</div>
-					<div class="rectangle">
-						<img src="@/assets/矩形 42455.png">
-					</div>
-					<!-- <div v-if="isLogin" class="middleContentiImage" @click="onClick('selectStyle')">
-						<div class="middleContentImageLogin"><img src="@/assets/AI风格改写.png" alt="AI风格改写"></div>
-						<div class='middleContentImageTextLogin'>AI风格改写</div>
-					</div>
-					<div v-else class="middleContentiImage">
-						<div class="middleContentImageUnLogin"><img src="@/assets/AI风格改写.png" alt="AI风格改写"></div>
-						<div class="middleContentImageTextUnLogin">AI风格改写</div>
-					</div> -->
-					<div class="middleContentiImage" @click="onClick('selectStyle')">
-						<div class="middleContentImageLogin"><img src="@/assets/AI风格改写.png" alt="AI风格改写"></div>
-						<div class='middleContentImageTextLogin'>AI风格改写</div>
-					</div>
-					<div class="rectangle">
-						<img src="@/assets/矩形 42455.png">
-					</div>
-					<div class="middleContentiImage">
-						<div class="middleContentImageUnLogin"><img src="@/assets/RPA自动运营账号.png" alt="RAP自动运营账号"></div>
-						<div class="middleContentImageTextUnLogin">RAP自动运营账号</div>
-					</div>
-					<div class="rectangle">
-						<img src="@/assets/矩形 42455.png">
-					</div>
-					<div class="middleContentiImage">
-						<div class="middleContentImageUnLogin"><img src="@/assets/营销决策，智能辅助.png" alt="营销决策，智能辅助"></div>
-						<div class="middleContentImageTextUnLogin">营销决策，智能辅助</div>
+					<div class='jianbian'></div>
+					<div class="lingshouyingxiaoValue">
+						<div class='middleContentiImageLeft'>
+							<img src="@/assets/AI零售营销.png" alt="AI零售营销">
+						</div>
+						<!-- <div v-if="isLogin" class="middleContentiImage" @click="onClick('marketingWriting')">
+							<div class="middleContentImageLogin"><img src="@/assets/AI营销写作.png" alt="AI营销写作"></div>
+							<div class="middleContentImageTextLogin">AI营销写作</div>
+						</div>
+						<div v-else class="middleContentiImage">
+							<div class="middleContentImageUnLogin"><img  src="@/assets/AI营销写作.png" alt="AI营销写作"></div>
+							<div class="middleContentImageTextUnLogin">AI营销写作</div>
+						</div> -->
+						<div class="middleContentiImage" @click="onClick('marketingWriting')">
+							<div class="middleContentImageLogin"><img src="@/assets/AI营销写作.png" alt="AI营销写作"></div>
+							<div class="middleContentImageTextLogin">AI营销写作</div>
+						</div>
+						<div class="rectangle">
+							<img src="@/assets/矩形 42455.png">
+						</div>
+						<!-- <div v-if="isLogin" class="middleContentiImage" @click="onClick('selectStyle')">
+							<div class="middleContentImageLogin"><img src="@/assets/AI风格改写.png" alt="AI风格改写"></div>
+							<div class='middleContentImageTextLogin'>AI风格改写</div>
+						</div>
+						<div v-else class="middleContentiImage">
+							<div class="middleContentImageUnLogin"><img src="@/assets/AI风格改写.png" alt="AI风格改写"></div>
+							<div class="middleContentImageTextUnLogin">AI风格改写</div>
+						</div> -->
+						<div class="middleContentiImage" @click="onClick('selectStyle')">
+							<div class="middleContentImageLogin"><img src="@/assets/AI风格改写.png" alt="AI风格改写"></div>
+							<div class='middleContentImageTextLogin'>AI风格改写</div>
+						</div>
+						<div class="rectangle">
+							<img src="@/assets/矩形 42455.png">
+						</div>
+						<div class="middleContentiImage">
+							<div class="middleContentImageUnLogin"><img src="@/assets/RPA自动运营账号.png" alt="RPA自动运营账号"></div>
+							<div class="middleContentImageTextUnLogin">RPA自动运营账号</div>
+						</div>
+						<div class="rectangle">
+							<img src="@/assets/矩形 42455.png">
+						</div>
+						<div class="middleContentiImage">
+							<div class="middleContentImageUnLogin"><img src="@/assets/营销决策，智能辅助.png" alt="营销决策，智能辅助"></div>
+							<div class="middleContentImageTextUnLogin">营销决策，智能辅助</div>
+						</div>
 					</div>
 				</div>
 				<div class="gukeyingxiao">
-					<div class='middleContentiImageLeft'>
-						<img src="@/assets/AI顾客营销.png" alt="AI顾客营销">
-					</div>
-					<!-- <div v-if="isLogin" class="middleContentiImage" @click="onClick('memberPromotion')">
-						<div class="middleContentImageLogin"><img src="@/assets/会员促活话术智能生成.png" alt="会员促活文案"></div>
-						<div class="middleContentImageTextLogin">会员促活文案</div>
-					</div>
-					<div v-else class="middleContentiImage">
-						<div class="middleContentImageUnLogin"><img src="@/assets/会员促活话术智能生成.png" alt="会员促活文案"></div>
-						<div class="middleContentImageTextUnLogin">会员促活文案</div>
-					</div> -->
-					<div class="middleContentiImage" @click="onClick('memberPromotion')">
-						<div class="middleContentImageLogin"><img src="@/assets/会员促活话术智能生成.png" alt="会员促活文案"></div>
-						<div class="middleContentImageTextLogin">会员促活文案</div>
-					</div>
-					<div class="rectangle">
-						<img src="@/assets/矩形 42455.png">
-					</div>
-					<div class="middleContentiImage">
-						<div class="middleContentImageUnLogin"><img src="@/assets/智能评论处理.png" alt="智能评论处理"></div>
-						<div class="middleContentImageTextUnLogin">智能评论处理</div>
-					</div>
-					<div class="rectangle">
-						<img src="@/assets/矩形 42455.png">
-					</div>
-					<div class="middleContentiImage">
-						<div class="middleContentImageUnLogin"><img src="@/assets/客诉智能回复.png" alt="客诉智能回复"></div>
-						<div class="middleContentImageTextUnLogin">客诉智能回复</div>
+					<div style="height: 8.2vh"></div>
+					<div class='jianbian'></div>
+					<div class="gukeyingxiaoValue">
+						<div class='middleContentiImageLeft'>
+							<img src="@/assets/AI顾客营销.png" alt="AI顾客营销">
+						</div>
+						<!-- <div v-if="isLogin" class="middleContentiImage" @click="onClick('memberPromotion')">
+							<div class="middleContentImageLogin"><img src="@/assets/会员促活话术智能生成.png" alt="会员促活文案"></div>
+							<div class="middleContentImageTextLogin">会员促活文案</div>
+						</div>
+						<div v-else class="middleContentiImage">
+							<div class="middleContentImageUnLogin"><img src="@/assets/会员促活话术智能生成.png" alt="会员促活文案"></div>
+							<div class="middleContentImageTextUnLogin">会员促活文案</div>
+						</div> -->
+						<div class="middleContentiImage" @click="onClick('memberPromotion')">
+							<div class="middleContentImageLogin"><img src="@/assets/会员促活话术智能生成.png" alt="会员促活文案"></div>
+							<div class="middleContentImageTextLogin">会员促活文案</div>
+						</div>
+						<div class="rectangle">
+							<img src="@/assets/矩形 42455.png">
+						</div>
+						<div class="middleContentiImage">
+							<div class="middleContentImageUnLogin"><img src="@/assets/智能评论处理.png" alt="智能评论处理"></div>
+							<div class="middleContentImageTextUnLogin">智能评论处理</div>
+						</div>
+						<div class="rectangle">
+							<img src="@/assets/矩形 42455.png">
+						</div>
+						<div class="middleContentiImage">
+							<div class="middleContentImageUnLogin"><img src="@/assets/客诉智能回复.png" alt="客诉智能回复"></div>
+							<div class="middleContentImageTextUnLogin">客诉智能回复</div>
+						</div>
 					</div>
 				</div>
 				<div class="qiangjigongcheng">
-					<div class='middleContentiImageLeft'>
-						<img src="@/assets/强基工程.png" alt="强基工程">
-					</div>
-					<div class="middleContentiImage">
-						<div class="middleContentImageUnLogin"><img src="@/assets/AI随身专家.png" alt="AI随身专家"></div>
-						<div class="middleContentImageTextUnLogin">AI随身专家</div>
-					</div>
-					<div class="rectangle">
-						<img src="@/assets/矩形 42455.png">
-					</div>
-					<div class="middleContentiImage">
-						<div class="middleContentImageUnLogin"><img src="@/assets/智能培训.png" alt="智能培训"></div>
-						<div class="middleContentImageTextUnLogin">智能培训</div>
-					</div>
-					<div class="rectangle">
-						<img src="@/assets/矩形 42455.png">
-					</div>
-					<div class="middleContentiImage">
-						<div class="middleContentImageUnLogin"><img src="@/assets/智能督导.png" alt="智能督导"></div>
-						<div class="middleContentImageTextUnLogin">智能督导</div>
+					<div style="height: 8.2vh"></div>
+					<div class='jianbian'></div>
+					<div class="qiangjigongchengValue">
+						<div class='middleContentiImageLeft'>
+							<img src="@/assets/强基工程.png" alt="强基工程">
+						</div>
+						<div class="middleContentiImage">
+							<div class="middleContentImageUnLogin"><img src="@/assets/AI随身专家.png" alt="AI随身专家"></div>
+							<div class="middleContentImageTextUnLogin">AI随身专家</div>
+						</div>
+						<div class="rectangle">
+							<img src="@/assets/矩形 42455.png">
+						</div>
+						<div class="middleContentiImage">
+							<div class="middleContentImageUnLogin"><img src="@/assets/智能培训.png" alt="智能培训"></div>
+							<div class="middleContentImageTextUnLogin">智能培训</div>
+						</div>
+						<div class="rectangle">
+							<img src="@/assets/矩形 42455.png">
+						</div>
+						<div class="middleContentiImage">
+							<div class="middleContentImageUnLogin"><img src="@/assets/智能督导.png" alt="智能督导"></div>
+							<div class="middleContentImageTextUnLogin">智能督导</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -254,14 +265,14 @@ const clickButton = () => {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		margin-top: 10vh;
+		margin-top: 2vh;
 
 		.unit {
 			width: 62.5vw;
-			height: 64.81vh;
+			height: 73vh;
 			display: flex;
 			flex-direction: column;
-			justify-content: space-between;
+			justify-content: flex-start;
 			align-items: flex-start;
 
 			.rectangle {
@@ -274,28 +285,50 @@ const clickButton = () => {
 				width: 100%;
 				display: flex;
 				justify-content: flex-start;
-				flex-direction: row;
+				flex-direction: column;
+				height: 21vh;
+
+				.lingshouyingxiaoValue{
+					display: flex;
+					justify-content: flex-start;
+					flex-direction: row;
+				}
 			}
 
 			.gukeyingxiao {
 				width: 100%;
 				display: flex;
 				justify-content: flex-start;
-				flex-direction: row;
+				flex-direction: column;
+				height: 26.8vh;
+
+				.gukeyingxiaoValue{
+					display: flex;
+					justify-content: flex-start;
+					flex-direction: row;
+				}
 			}
 
 			.qiangjigongcheng {
 				width: 100%;
 				display: flex;
 				justify-content: flex-start;
-				flex-direction: row;
+				flex-direction: column;
+				height: 26.8vh;
+
+				.qiangjigongchengValue{
+					display: flex;
+					justify-content: flex-start;
+					flex-direction: row;
+				}
 			}
 
-			.middleContentiImageLeft {
-				width: 18%;
-				border-radius: 0px 0px 0px 0px;
-				margin-top: 4px;
+			.jianbian{
+				height: 8vh;
+				background: radial-gradient(ellipse farthest-side at 50% -4%, #FFFFFF 0%, rgba(255,255,255,0) 100%);
+				opacity: 0.7;
 			}
+
 
 			.middleContentiImage {
 				display: flex;
@@ -336,7 +369,7 @@ const clickButton = () => {
 
 	.bottom {
 		width: 100%;
-		margin-top: 17.68vh;
+		margin-top: 17.6vh;
 		display: flex;
 		align-items: center;
 		flex-direction: column;
